@@ -46,14 +46,21 @@ export function write(day:number, filename:string,content:string, options:string
     fs.writeFileSync(sourceFolder + day + '/' + fn,content);
 }
 
-export function read(day:number,filename:string, options:string='') : any[] {
+export function simpleRead(day:number, filename:string, options:string ='') : string {
     // options
     const example: boolean = options.includes('ex');
-    const toInt: boolean = options.includes('toint');
 
     const fn = (example ? exampleString : '') + filename;
-    print(' reading file: ',day,'/', fn)
-    const input = fs.readFileSync(sourceFolder + day + '/' + fn, 'utf8').split('\r\n\r\n').map(el => el.split('\r\n').map(i => toInt ? +i : i));
+    print(' reading file: ',day,'/', fn);
+
+    return fs.readFileSync(sourceFolder + day + '/' + fn, 'utf8');
+}
+
+export function read(day:number,filename:string, options:string='') : any[] {
+    // options
+    const toInt: boolean = options.includes('toint');
+    
+    const input = simpleRead(day,filename,options).split('\r\n\r\n').map(el => el.split('\r\n').map(i => toInt ? +i : i));
     return (input.length == 1) ? input[0] : input;
 }
 
