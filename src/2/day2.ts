@@ -12,7 +12,6 @@ var inputFile = 'instructions.txt';
 var input = h.read(2,inputFile);
 
 // part 1
-var x = inDir(input,'forward');
-var depth = inDir(input,'down') - inDir(input,'up');
-h.print('final position: ['+ x + ', ' + (-depth) + ']');
-h.print('multiplied: ' + (x*depth));
+var xy: number[] = [inDir(input,'forward'), inDir(input,'down') - inDir(input,'up')];
+h.print('final position: '+ xy);
+h.print('multiplied: ' + xy.multiply());

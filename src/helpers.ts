@@ -5,20 +5,32 @@ const exampleString = 'example_';
 
 export {}
 declare global {
-  interface Array<T>  {
-    sum(): number;
-  }
+    interface Array<T>  {
+        sum(): number;
+        multiply(): number;
+    }
 }
 
 if (!Array.prototype.sum) {
-  Object.defineProperty(Array.prototype, 'sum', {
-    enumerable: false, 
-    writable: false, 
-    configurable: false, 
-    value: function sum(this: number[]): number {
-      return this.reduce((a:number,b:number) => a+b, 0);
-    }
-  });
+    Object.defineProperty(Array.prototype, 'sum', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function sum(this: number[]): number {
+        return this.reduce((a:number,b:number) => a+b);
+        }
+    });
+}
+
+if (!Array.prototype.multiply) {
+Object.defineProperty(Array.prototype, 'multiply', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function multiply(this: number[]): number {
+        return this.reduce((a:number,b:number) => a*b);
+        }
+    });
 }
 
 export function stringify(object: any) : string {
@@ -31,7 +43,7 @@ export function write(day:number, filename:string,content:string, options:string
 
     const fn = (example ? exampleString : '') + filename;
     print(' writing to file: '+fn)
-    fs.writeFileSync(sourceFolder + day.toString() + '/' + fn,content);
+    fs.writeFileSync(sourceFolder + day + '/' + fn,content);
 }
 
 export function read(day:number,filename:string, options:string='') : any[] {
@@ -41,7 +53,7 @@ export function read(day:number,filename:string, options:string='') : any[] {
 
     const fn = (example ? exampleString : '') + filename;
     print(' reading file: '+fn)
-    const input = fs.readFileSync(sourceFolder + day.toString() + '/' + fn, 'utf8').split('\r\n\r\n').map(el => el.split('\r\n').map(i => toInt ? +i : i));
+    const input = fs.readFileSync(sourceFolder + day + '/' + fn, 'utf8').split('\r\n\r\n').map(el => el.split('\r\n').map(i => toInt ? +i : i));
     return (input.length == 1) ? input[0] : input;
 }
 
