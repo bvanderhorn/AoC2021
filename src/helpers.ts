@@ -7,28 +7,56 @@ export {}
 declare global {
     interface Array<T>  {
         sum(): number;
+        sum0(): number[];
+        sum1(): number[];
         multiply(): number;
     }
 }
 
 if (!Array.prototype.sum) {
+    // sum of all array elements
     Object.defineProperty(Array.prototype, 'sum', {
         enumerable: false, 
         writable: false, 
         configurable: false, 
         value: function sum(this: number[]): number {
-        return this.reduce((a:number,b:number) => a+b);
+            return this.reduce((a:number,b:number) => a+b);
+        }
+    });
+}
+
+if (!Array.prototype.sum0) {
+    // piece-wise sum of sub-array elements in primary (Y) direction
+    Object.defineProperty(Array.prototype, 'sum0', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function sum0(this:number[][] ): number[] {
+            return this[0].map((el:number,i:number) => el + this.slice(1).map(c => c[i]).sum());
+        }
+    });
+}
+
+if (!Array.prototype.sum1) {
+    // sum of elements of each sub-array (i.e., sum in secondary (X) direction)
+    Object.defineProperty(Array.prototype, 'sum1', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function sum1(this: number[][]): number[] {
+            return this.map(el => el.sum());
         }
     });
 }
 
 if (!Array.prototype.multiply) {
-Object.defineProperty(Array.prototype, 'multiply', {
+    // multiplication of all array elements
+    Object.defineProperty(Array.prototype, 'multiply', {
         enumerable: false, 
         writable: false, 
         configurable: false, 
         value: function multiply(this: number[]): number {
-        return this.reduce((a:number,b:number) => a*b);
+            return this.reduce((a:number,b:number) => a*b);
         }
     });
 }
