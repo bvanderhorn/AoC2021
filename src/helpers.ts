@@ -3,6 +3,24 @@ import * as fs from "fs";
 const sourceFolder = '../../src/';
 const exampleString = 'example_';
 
+export {}
+declare global {
+  interface Array<T>  {
+    sum(): number;
+  }
+}
+
+if (!Array.prototype.sum) {
+  Object.defineProperty(Array.prototype, 'sum', {
+    enumerable: false, 
+    writable: false, 
+    configurable: false, 
+    value: function sum(this: number[]): number {
+      return this.reduce((a:number,b:number) => a+b, 0);
+    }
+  });
+}
+
 export function stringify(object: any) : string {
     return JSON.stringify(object, null, 4);
 }
