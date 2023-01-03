@@ -42,7 +42,7 @@ export function write(day:number, filename:string,content:string, options:string
     const example: boolean = options.includes('ex');
 
     const fn = (example ? exampleString : '') + filename;
-    print(' writing to file: '+fn)
+    print(' writing to file: ',day,'/',fn)
     fs.writeFileSync(sourceFolder + day + '/' + fn,content);
 }
 
@@ -52,11 +52,11 @@ export function read(day:number,filename:string, options:string='') : any[] {
     const toInt: boolean = options.includes('toint');
 
     const fn = (example ? exampleString : '') + filename;
-    print(' reading file: '+fn)
+    print(' reading file: ',day,'/', fn)
     const input = fs.readFileSync(sourceFolder + day + '/' + fn, 'utf8').split('\r\n\r\n').map(el => el.split('\r\n').map(i => toInt ? +i : i));
     return (input.length == 1) ? input[0] : input;
 }
 
-export function print(input:any) {
-    console.log(input);
+export function print(...input:any[]) {
+    console.log(...input);
 }

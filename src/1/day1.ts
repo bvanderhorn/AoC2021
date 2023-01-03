@@ -1,17 +1,15 @@
 import * as h from "../helpers";
 
-// params
-var inputFile = 'sweep.txt';
+// functions
+var nofIncreases = (array1:number[]) : number => array1.slice(1).map((el,i) => (el > array1[i]) ? 1 : 0).sum();
 
 // parse
-var input = h.read(1,inputFile,'toint');
+var input = h.read(1,'sweep.txt','toint');
 h.print(input.slice(0,10));
 
 // part 1
-var incr = input.slice(1).map((el,i) => (el > input[i]) ? "1" : "0").reduce((a,b) => +a + +b, 0);
-h.print(incr);
+h.print(nofIncreases(input));
 
 // part 2
 var sumList = input.slice(2).map((el, i) => input[i] + input[i+1] + el);
-var incrSum = sumList.slice(1).map((el, i) => (el > sumList[i]) ? "1" : "0").reduce((a, b) => +a + +b, 0);
-h.print(incrSum);
+h.print(nofIncreases(sumList));
