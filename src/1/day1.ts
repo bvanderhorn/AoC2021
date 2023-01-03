@@ -1,11 +1,10 @@
 import * as h from "../helpers";
 
-// functions
-
 // params
 var inputFile = 'sweep.txt';
 
 // parse
-var input = h.readInput(1,inputFile);
-
+var input = h.read(1,inputFile,'toint');
 h.print(input.slice(0,10));
+var incr = input.slice(1).map((el,i) => (el > input[i]) ? "1" : "0").reduce((a,b) => +a + +b, 0);
+h.print(incr);
