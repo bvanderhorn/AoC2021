@@ -29,6 +29,12 @@ var cross = (range1:number[][], range2:number[][]) : boolean => {
     if (direction(range1) == 0) return (xMin1 <= xMin2) && (xMax1 >= xMin2) && (yMin2 <= yMin1) && (yMax2 >= yMin1);
     else return (yMin1 <= yMin2) && (yMax1 >= yMin2) && (xMin2 <= xMin1) && (xMax2 >= xMin1);
 }
+var expandDiagonally = (c1:number[], c2:number[]) : number[][] => {
+    var len = Math.abs(c1[0]-c2[0]) + 1;
+    var [dx, dy] = [(c2[0]-c1[0])/(len-1), (c2[1]-c1[1])/(len-1)];
+    return h.rangee(0,len).map(i => [c1[0] + i*dx, c1[1] + i*dy]);
+}
+var superExpand = (c1:number[], c2:number[]) : number[][] => ((c1[0] == c2[0]) || (c1[1] == c2[1])) ? h.expand(c1,c2) : expandDiagonally(c1,c2);
 var inBoth = (array1:number[][], array2:number[][]) : number[][] => h.uniqueArray(array1).filter(el => h.contains(array2, el));
 var vents = h.read(5,'vents.txt').map(v => v.trim().split(/\s+->\s+/).map((co:string) => co.split(',').toInt()));
 
@@ -43,3 +49,13 @@ for (const i of vents1.range(1)) {
 }
 var uniqueDangerous = h.uniqueArray(dangerousVents);
 h.print('part 1 => unique dangerous vents: ',uniqueDangerous.length);
+
+// part 2
+var moreDangerousVents: number [][] = [];
+var expandedVents = vents.map(v => superExpand(v[0],v[1]));
+for (const i of vents.range(1)) {
+    for (const j of h.rangee(0,i)) moreDangerousVents.push(...inBoth(expandedVents[i], expandedVents[j]));
+    if ((i%Math.floor(vents.length/100)) == 0) h.print((i/vents.length*100).toPrecision(2),'% done');
+}
+var uniqueMoreDangerous = h.uniqueArray(moreDangerousVents);
+h.print('part 2 => extended unique dangerous vents: ', uniqueMoreDangerous.length);
