@@ -1,7 +1,7 @@
 import * as h from "../helpers";
 var majorities = (arr: number[][]) : number[] => arr.sum0().map((el:number) => (el >= (arr.length/2)) ? 1 : 0);
 var minorities = (arr: number[][]) : number[] => majorities(arr).map((el:number) => 1 - el);
-const arrays = h.read(3,'binaries.txt').map(el => el.split('').map((x:string) => +x));
+const arrays = h.read(3,'binaries.txt').map(el => el.split('').toInt());
 
 // part 1
 const [gamma, epsilon] = [majorities(arrays).join(''), minorities(arrays).join('')];

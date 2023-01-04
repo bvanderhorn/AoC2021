@@ -12,7 +12,20 @@ declare global {
         sum1(): number[];
         prod0(): number[];
         prod1(): number[];
+        toInt(): number[];
     }
+}
+
+if (!Array.prototype.toInt) {
+    // sum of all array elements
+    Object.defineProperty(Array.prototype, 'toInt', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function toInt(this: string[]): number[] {
+            return this.map(str => +str);
+        }
+    });
 }
 
 if (!Array.prototype.sum) {
