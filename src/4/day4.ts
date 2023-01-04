@@ -4,11 +4,18 @@ var score =  (board:number[][], numbers:number[]) : number => board.flat().filte
 const input = h.read(4,'bingo.txt');
 const [numbers, boards] = [input[0][0].split(',').toInt(), input.slice(1).map(b => b.map((line:string) => line.trim().split(/\s+/).toInt()))];
 
-// part 1
+// part 1/2
+var foundPart1 = false;
+var prevWinBoards = new Array(boards.length).fill(0);
 for (const n of numbers.range().slice(1)) {
     var winBoards = boards.map(b => wins(b,numbers.slice(0,n)) ? 1: 0);
-    if (winBoards.sum() > 0) {
-        h.print(score(boards[winBoards.findIndex(i => i === 1)], numbers.slice(0,n)));
+    if ((winBoards.sum() == 1) && (!foundPart1)) {
+        h.print('part 1 score: ',score(boards[winBoards.findIndex(i => i === 1)], numbers.slice(0,n)));
+        foundPart1 = true;
+    }
+    if (winBoards.sum() == boards.length) {
+        h.print('part 2 score: ',score(boards[prevWinBoards.findIndex(i => i == 0)],numbers.slice(0,n)));
         break;
     }
+    prevWinBoards = winBoards.map(el => el);
 }
