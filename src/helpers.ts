@@ -13,6 +13,10 @@ declare global {
         prod0(): number[];
         prod1(): number[];
         toInt(): number[];
+        range(): number[];
+        col(column:number): any[];
+        includesAll(array: any[]) : boolean;
+        last(): any;
     }
 }
 
@@ -24,6 +28,54 @@ if (!Array.prototype.toInt) {
         configurable: false, 
         value: function toInt(this: string[]): number[] {
             return this.map(str => +str);
+        }
+    });
+}
+
+if (!Array.prototype.col) {
+    // sum of all array elements
+    Object.defineProperty(Array.prototype, 'col', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function col(this: any[][], column:number): any[] {
+            return this.map(el => el[column]);
+        }
+    });
+}
+
+if (!Array.prototype.includesAll) {
+    // sum of all array elements
+    Object.defineProperty(Array.prototype, 'includesAll', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function includesAll(this: any[], array:any[]): boolean {
+            return array.every(v => this.includes(v));
+        }
+    });
+}
+
+if (!Array.prototype.range) {
+    // sum of all array elements
+    Object.defineProperty(Array.prototype, 'range', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function range(this: any[]): number[] {
+            return rangee(0, this.length);
+        }
+    });
+}
+
+if (!Array.prototype.last) {
+    // sum of all array elements
+    Object.defineProperty(Array.prototype, 'last', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function last(this: any[]): any {
+            return this[this.length -1];
         }
     });
 }
@@ -179,4 +231,8 @@ export function isDivisible(num:number, div:number){
 
 export function overlaps(interval1:number[], interval2:number[]) : boolean {
     return interval1[0]<=interval2[1] && interval1[1]>=interval2[0]; 
+}
+
+export function rangee(start:number, end:number) : number[] {
+    return Array.from({length: (end - start)}, (v, k) => k + start);
 }
