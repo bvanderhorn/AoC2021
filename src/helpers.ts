@@ -16,6 +16,7 @@ declare global {
         range(start:number): number[];
         range(): number[];
         col(column:number): any[];
+        count(element:any): number;
         includesAll(array: any[]) : boolean;
         last(): any;
     }
@@ -41,6 +42,20 @@ if (!Array.prototype.col) {
         configurable: false, 
         value: function col(this: any[][], column:number): any[] {
             return this.map(el => el[column]);
+        }
+    });
+}
+
+if (!Array.prototype.count) {
+    // sum of all array elements
+    Object.defineProperty(Array.prototype, 'count', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function count(this: any[], element:any): number {
+            return this.reduce(function(n, val) {
+                return n + (val === element);
+            }, 0);
         }
     });
 }
