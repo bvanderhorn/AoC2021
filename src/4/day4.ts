@@ -7,7 +7,7 @@ const [numbers, boards] = [input[0][0].split(',').toInt(), input.slice(1).map(b 
 // part 1/2
 var foundPart1 = false;
 var prevWinBoards = new Array(boards.length).fill(0);
-for (const n of numbers.range().slice(1)) {
+for (const n of numbers.range(1)) {
     var winBoards = boards.map(b => wins(b,numbers.slice(0,n)) ? 1: 0);
     if ((winBoards.sum() == 1) && (!foundPart1)) {
         h.print('part 1 score: ',score(boards[winBoards.findIndex(i => i === 1)], numbers.slice(0,n)));

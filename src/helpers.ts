@@ -13,7 +13,7 @@ declare global {
         prod0(): number[];
         prod1(): number[];
         toInt(): number[];
-        range(): number[];
+        range(start:number): number[];
         col(column:number): any[];
         includesAll(array: any[]) : boolean;
         last(): any;
@@ -62,8 +62,8 @@ if (!Array.prototype.range) {
         enumerable: false, 
         writable: false, 
         configurable: false, 
-        value: function range(this: any[]): number[] {
-            return rangee(0, this.length);
+        value: function range(this: any[],start:number = 0): number[] {
+            return rangee(start, this.length);
         }
     });
 }
