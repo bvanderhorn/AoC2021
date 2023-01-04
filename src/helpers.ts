@@ -207,12 +207,14 @@ export function equals(first: any[], second: any[]) : boolean {
     return JSON.stringify(first) === JSON.stringify(second);
 }
 
+export function equals2(first: any[], second: any[]): boolean {
+    if (first.length != second.length) return false;
+    for (let i=0;i<first.length;i++) if (first[i] !== second[i]) return false;
+    return true;
+}
+
 export function contains(array: any[][], element: any[]): boolean {
-    return array.filter(el => {
-        if (el.length != element.length) return false;
-        for (let i=0;i<el.length;i++) if (el[i] !== element[i]) return false;
-        return true;
-    }).length >= 1;
+    return array.filter(el => equals2(el, element)).length >= 1;
 }
 
 export function uniqueSimple(array: any[]) : any[] {
@@ -236,4 +238,18 @@ export function overlaps(interval1:number[], interval2:number[]) : boolean {
 
 export function rangee(start:number, end:number) : number[] {
     return Array.from({length: (end - start)}, (v, k) => k + start);
+}
+
+export function expand(coor1: number[], coor2: number[]) : number[][] {
+    var varIndex = (coor1[0] === coor2[0]) ? 1 : 0;
+    var start = Math.min(coor1[varIndex], coor2[varIndex]);
+    var end = Math.max(coor1[varIndex], coor2[varIndex]);
+    var varIndices = Array(end-start+1).fill(1).map((_, index) => start + index);
+    var expanded = (coor1[0] === coor2[0]) ? varIndices.map(el => [coor1[0], el]) : varIndices.map(el => [el, coor1[1]]);
+    return start === coor1[varIndex] ? expanded : expanded.reverse();
+}
+export function expandTrace(trace:number[][]) : number[][] {
+    var expTrace : number[][] = [trace[0]];
+    for (let i=1;i<trace.length;i++) expTrace = expTrace.concat(expand(trace[i-1],trace[i]).slice(1));
+    return expTrace;
 }
