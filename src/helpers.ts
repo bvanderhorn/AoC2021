@@ -14,6 +14,7 @@ declare global {
         prod1(): number[];
         toInt(): number[];
         range(start:number): number[];
+        range(): number[];
         col(column:number): any[];
         includesAll(array: any[]) : boolean;
         last(): any;
