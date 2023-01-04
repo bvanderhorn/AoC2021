@@ -20,7 +20,7 @@ if (!Array.prototype.sum) {
         writable: false, 
         configurable: false, 
         value: function sum(this: number[]): number {
-            return this.reduce((a:number,b:number) => a+b);
+            return this.reduce((a:number,b:number) => a+b, 0);
         }
     });
 }
@@ -94,4 +94,31 @@ export function read(day:number,filename:string, options:string='') : any[] {
 
 export function print(...input:any[]) {
     console.log(...input);
+}
+
+export function equals(first: any[], second: any[]) : boolean {
+    return JSON.stringify(first) === JSON.stringify(second);
+}
+
+export function uniqueArray(array: number[][]) {
+    // from https://stackoverflow.com/a/66420296/1716283
+    return Array.from(
+        new Map(array.map((p) => [JSON.stringify(p), p])).values()
+      )
+}
+
+export function isDivisible(num:number, div:number){
+    return num/div === Math.floor(num/div);
+}
+
+export function contains(array: any[][], element: any[]): boolean {
+    return array.filter(el => {
+        if (el.length != element.length) return false;
+        for (let i=0;i<el.length;i++) if (el[i] !== element[i]) return false;
+        return true;
+    }).length >= 1;
+}
+
+export function overlaps(interval1:number[], interval2:number[]) : boolean {
+    return interval1[0]<=interval2[1] && interval1[1]>=interval2[0]; 
 }
