@@ -7,9 +7,11 @@ export {}
 declare global {
     interface Array<T>  {
         sum(): number;
+        prod(): number;
         sum0(): number[];
         sum1(): number[];
-        multiply(): number;
+        prod0(): number[];
+        prod1(): number[];
     }
 }
 
@@ -32,7 +34,31 @@ if (!Array.prototype.sum0) {
         writable: false, 
         configurable: false, 
         value: function sum0(this:number[][] ): number[] {
-            return this[0].map((el:number,i:number) => el + this.slice(1).map(c => c[i]).sum());
+            return apply0(this, 'sum');
+        }
+    });
+}
+
+if (!Array.prototype.prod0) {
+    // piece-wise product of sub-array elements in primary (Y) direction
+    Object.defineProperty(Array.prototype, 'prod0', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function prod0(this:number[][] ): number[] {
+            return apply0(this, 'prod');
+        }
+    });
+}
+
+if (!Array.prototype.prod1) {
+    // products of all elements within each sub-array (in secondary (X) direction)
+    Object.defineProperty(Array.prototype, 'prod1', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function prod1(this:number[][] ): number[] {
+            return apply1(this, 'prod');
         }
     });
 }
@@ -44,20 +70,35 @@ if (!Array.prototype.sum1) {
         writable: false, 
         configurable: false, 
         value: function sum1(this: number[][]): number[] {
-            return this.map(el => el.sum());
+            return apply1(this, 'sum');
         }
     });
 }
 
-if (!Array.prototype.multiply) {
+if (!Array.prototype.prod) {
     // multiplication of all array elements
-    Object.defineProperty(Array.prototype, 'multiply', {
+    Object.defineProperty(Array.prototype, 'prod', {
         enumerable: false, 
         writable: false, 
         configurable: false, 
-        value: function multiply(this: number[]): number {
+        value: function prod(this: number[]): number {
             return this.reduce((a:number,b:number) => a*b);
         }
+    });
+}
+
+export function apply0(array: number[][],operation:string) : number[] {
+    return array[0].map((el:number,i:number) => {
+        let verticalSlice = array.slice(1).map(c => c[i]);
+        if (operation === 'sum') return el + verticalSlice.sum();
+        else return el * verticalSlice.prod();
+    });
+}
+
+export function apply1(array: number[][], operation:string) : number[] {
+    return array.map(el => {
+        if (operation == 'sum') return el.sum();
+        else return el.prod();
     });
 }
 
@@ -100,6 +141,18 @@ export function equals(first: any[], second: any[]) : boolean {
     return JSON.stringify(first) === JSON.stringify(second);
 }
 
+export function contains(array: any[][], element: any[]): boolean {
+    return array.filter(el => {
+        if (el.length != element.length) return false;
+        for (let i=0;i<el.length;i++) if (el[i] !== element[i]) return false;
+        return true;
+    }).length >= 1;
+}
+
+export function uniqueSimple(array: any[]) : any[] {
+    return [...new Set(array)];
+}
+
 export function uniqueArray(array: number[][]) {
     // from https://stackoverflow.com/a/66420296/1716283
     return Array.from(
@@ -109,14 +162,6 @@ export function uniqueArray(array: number[][]) {
 
 export function isDivisible(num:number, div:number){
     return num/div === Math.floor(num/div);
-}
-
-export function contains(array: any[][], element: any[]): boolean {
-    return array.filter(el => {
-        if (el.length != element.length) return false;
-        for (let i=0;i<el.length;i++) if (el[i] !== element[i]) return false;
-        return true;
-    }).length >= 1;
 }
 
 export function overlaps(interval1:number[], interval2:number[]) : boolean {
