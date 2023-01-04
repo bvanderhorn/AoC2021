@@ -19,11 +19,13 @@ declare global {
         count(element:any): number;
         includesAll(array: any[]) : boolean;
         last(): any;
+        min(): number;
+        max(): number;
     }
 }
 
 if (!Array.prototype.toInt) {
-    // sum of all array elements
+    // cast all elements to int
     Object.defineProperty(Array.prototype, 'toInt', {
         enumerable: false, 
         writable: false, 
@@ -34,8 +36,32 @@ if (!Array.prototype.toInt) {
     });
 }
 
+if (!Array.prototype.min) {
+    // minimum of all array elements
+    Object.defineProperty(Array.prototype, 'min', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function min(this: number[]): number {
+            return Math.min(...this);
+        }
+    });
+}
+
+if (!Array.prototype.max) {
+    // maximum of all array elements
+    Object.defineProperty(Array.prototype, 'max', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function max(this: number[]): number {
+            return Math.max(...this);
+        }
+    });
+}
+
 if (!Array.prototype.col) {
-    // sum of all array elements
+    // column of array with sub arrays at given X position
     Object.defineProperty(Array.prototype, 'col', {
         enumerable: false, 
         writable: false, 
@@ -47,7 +73,7 @@ if (!Array.prototype.col) {
 }
 
 if (!Array.prototype.count) {
-    // sum of all array elements
+    // count of all occurrences of element in array
     Object.defineProperty(Array.prototype, 'count', {
         enumerable: false, 
         writable: false, 
@@ -61,7 +87,7 @@ if (!Array.prototype.count) {
 }
 
 if (!Array.prototype.includesAll) {
-    // sum of all array elements
+    // check if array includes all elements of second array
     Object.defineProperty(Array.prototype, 'includesAll', {
         enumerable: false, 
         writable: false, 
@@ -73,7 +99,6 @@ if (!Array.prototype.includesAll) {
 }
 
 if (!Array.prototype.range) {
-    // sum of all array elements
     Object.defineProperty(Array.prototype, 'range', {
         enumerable: false, 
         writable: false, 
@@ -85,7 +110,7 @@ if (!Array.prototype.range) {
 }
 
 if (!Array.prototype.last) {
-    // sum of all array elements
+    // last element of array
     Object.defineProperty(Array.prototype, 'last', {
         enumerable: false, 
         writable: false, 
