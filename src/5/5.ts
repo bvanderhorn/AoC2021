@@ -1,6 +1,6 @@
 import * as h from "../helpers";
 var isHorVert = (range:number[][]) : boolean => (range[0][0] == range[1][0]) || (range[0][1] == range[1][1]);
-var minMax = (range:number[][]) : number[][] => [[range[0][0],range[1][0]].sort((a,b)=> a-b), [range[0][1],range[1][1]].sort((a,b)=> a-b)];
+var minMax = (range:number[][]) : number[][] => [[range[0][0],range[1][0]].sortInt(), [range[0][1],range[1][1]].sortInt()];
 var possibleOverlap = (range1:number[][], range2:number[][]) : boolean => {
     var [dx1, dy1, dx2, dy2] = minMax(range1).concat(minMax(range2));
     return h.overlaps(dx1, dx2) && h.overlaps(dy1, dy2);
@@ -18,17 +18,16 @@ var vents = h.read(5,'vents.txt').map((v:string) => v.trim().split(/\s+->\s+/).m
 
 // part 1/2
 var part = 2;
-var expandedVents = vents.map(v => superExpand(v));
+var expanded = vents.map(v => superExpand(v));
 var hvIndices = vents.range().filter(i => isHorVert(vents[i]));
 if (part == 1) {
     vents = hvIndices.map(i => vents[i]);
-    expandedVents = hvIndices.map(i => expandedVents[i]);
+    expanded = hvIndices.map(i => expanded[i]);
 }
-var dangerousVents: number[][] = [];
+var dVents: number[][] = [];
 for (const i of vents.range(1)) {
-    for (const j of h.rangee(0,i)) if (possibleOverlap(vents[i],vents[j])) dangerousVents = dangerousVents.concat(inBoth(expandedVents[i], expandedVents[j]));
+    for (const j of h.rangee(0,i)) if (possibleOverlap(vents[i],vents[j])) dVents = dVents.concat(inBoth(expanded[i], expanded[j]));
     if ((i%Math.floor(vents.length/10)) == 0) h.print((i/vents.length*100).toPrecision(2),'% done');
 }
-var uniqueDangerous = h.uniqueArray(dangerousVents);
-h.print('part ',part,' => unique dangerous vents: ',uniqueDangerous.length);
+h.print('part ',part,' => unique dangerous vents: ',h.uniqueArray(dVents).length);
 console.timeEnd("day 5");

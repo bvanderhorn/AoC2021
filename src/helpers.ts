@@ -13,6 +13,7 @@ declare global {
         prod0(): number[];
         prod1(): number[];
         toInt(): number[];
+        sortInt(): number[];
         range(start:number): number[];
         range(): number[];
         col(column:number): any[];
@@ -32,6 +33,18 @@ if (!Array.prototype.toInt) {
         configurable: false, 
         value: function toInt(this: string[]): number[] {
             return this.map(str => +str);
+        }
+    });
+}
+
+if (!Array.prototype.sortInt) {
+    // sort number array ascending
+    Object.defineProperty(Array.prototype, 'sortInt', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function sortInt(this: number[]): number[] {
+            return this.sort((a,b) => a-b);
         }
     });
 }
