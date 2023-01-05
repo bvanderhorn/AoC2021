@@ -17,6 +17,8 @@ declare global {
         range(start:number): number[];
         range(): number[];
         col(column:number): any[];
+        times(t: number) : number[];
+        plus(p:number) : number[];
         count(element:any): number;
         includesAll(array: any[]) : boolean;
         last(): any;
@@ -81,6 +83,30 @@ if (!Array.prototype.col) {
         configurable: false, 
         value: function col(this: any[][], column:number): any[] {
             return this.map(el => el[column]);
+        }
+    });
+}
+
+if (!Array.prototype.times) {
+    // multiply each element with a scalar value
+    Object.defineProperty(Array.prototype, 'times', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function times(this: number[], t:number): number[] {
+            return this.map(el => el * t);
+        }
+    });
+}
+
+if (!Array.prototype.plus) {
+    // add a scalar value to each element
+    Object.defineProperty(Array.prototype, 'plus', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function plus(this: number[], p:number): number[] {
+            return this.map(el => el + p);
         }
     });
 }
