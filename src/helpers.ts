@@ -89,3 +89,19 @@ export function expandTrace(trace:number[][]) : number[][] {
     for (let i=1;i<trace.length;i++) expTrace = expTrace.concat(expand(trace[i-1],trace[i]).slice(1));
     return expTrace;
 }
+
+export function getNeighbours(pos:number[], dy:number[], dx:number[]): number[][] {
+    // with Y being the primary (down) direction of the 2D map, and X being the secondary (right) one
+    // dx, dy are in format [xMin, xMax] / [yMin, yMax]
+    let neighbours : number[][] = [];
+    let nb = [
+        [pos[0]-1, pos[1]],
+        [pos[0]+1, pos[1]],
+        [pos[0], pos[1]-1],
+        [pos[0], pos[1]+1]
+    ];
+    for (const n of nb){
+        if (n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]) neighbours.push(n); 
+    }
+    return neighbours;
+}
