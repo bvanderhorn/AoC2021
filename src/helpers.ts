@@ -43,16 +43,6 @@ export function equals(first: any[], second: any[]) : boolean {
     return JSON.stringify(first) === JSON.stringify(second);
 }
 
-export function equals2(first: any[], second: any[]): boolean {
-    if (first.length != second.length) return false;
-    for (let i=0;i<first.length;i++) if (first[i] !== second[i]) return false;
-    return true;
-}
-
-export function contains(array: any[][], element: any[]): boolean {
-    return array.filter(el => equals2(el, element)).length >= 1;
-}
-
 export function uniqueSimple(array: any[]) : any[] {
     return [...new Set(array)];
 }

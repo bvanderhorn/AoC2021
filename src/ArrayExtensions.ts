@@ -16,6 +16,7 @@ declare global {
         plus(p:number) : any[];
         count(element:any): number;
         includesAll(array: any[]) : boolean;
+        includes2(array: any[]) : boolean;
         last(): any;
         min(): number;
         max(): number;
@@ -116,6 +117,18 @@ if (!Array.prototype.count) {
             return this.reduce(function(n, val) {
                 return n + (val === element);
             }, 0);
+        }
+    });
+}
+
+if (!Array.prototype.includes2) {
+    // check if array includes a complete given array as a sub-array
+    Object.defineProperty(Array.prototype, 'includes2', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function includes2(this: any[][], array:any[]): boolean {
+            return contains(this, array);
         }
     });
 }
@@ -240,4 +253,14 @@ export function apply1(array: number[][], operation:string) : number[] {
         if (operation == 'sum') return el.sum();
         else return el.prod();
     });
+}
+
+export function equals2(first: any[], second: any[]): boolean {
+    if (first.length != second.length) return false;
+    for (let i=0;i<first.length;i++) if (first[i] !== second[i]) return false;
+    return true;
+}
+
+export function contains(array: any[][], element: any[]): boolean {
+    return array.filter(el => equals2(el, element)).length >= 1;
 }
