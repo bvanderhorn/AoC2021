@@ -88,25 +88,25 @@ if (!Array.prototype.col) {
 }
 
 if (!Array.prototype.times) {
-    // multiply each element with a scalar value
+    // multiply each element with a scalar value (recursively)
     Object.defineProperty(Array.prototype, 'times', {
         enumerable: false, 
         writable: false, 
         configurable: false, 
-        value: function times(this: number[], t:number): number[] {
-            return this.map(el => el * t);
+        value: function times(this: any[], t:number): any[] {
+            return this.map(el => (typeof el === "number") ? el * t : el.times(t));
         }
     });
 }
 
 if (!Array.prototype.plus) {
-    // add a scalar value to each element
+    // add a scalar value to each element (recursively)
     Object.defineProperty(Array.prototype, 'plus', {
         enumerable: false, 
         writable: false, 
         configurable: false, 
-        value: function plus(this: number[], p:number): number[] {
-            return this.map(el => el + p);
+        value: function plus(this: any[], p:number): any[] {
+            return this.map(el => ["string","number"].includes(typeof el) ? el + p : el.plus(p));
         }
     });
 }
