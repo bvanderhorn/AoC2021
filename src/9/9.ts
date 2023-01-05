@@ -9,8 +9,8 @@ h.print('part 1: sum of local minima risk levels: ',map.map((l,i) => l.map((p,j)
 
 // part 2
 var backlog = map.map((l,i) => l.map((p,j) => p != 9 ? [i,j] : [-1,-1])).flat().filter(c => c[0] != -1);
-let basins: number[][][] ,curBasin: number[][] , curPos: number[], todo: number[][];
-[basins, curBasin, curPos, todo] = [[], [], backlog.shift() ?? [-1,-1], []];
+let basins: number[][][] = [], curBasin: number[][] = [], todo: number[][] = [];
+let curPos: number[] = backlog.shift() ?? [-1,-1];
 while (true) {
     let nb = h.getNeighbours(curPos, dy, dx).filter(n => map[n[0]][n[1]] != 9 && !curBasin.includes2(n) && !todo.includes2(n));
     backlog = backlog.filter(b => !nb.includes2(b));
