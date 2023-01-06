@@ -22,7 +22,20 @@ declare global {
         max(): number;
         split(str:(string|RegExp)): any[][];
         trim() : any[];
+        copy() : any[];
     }
+}
+
+if (!Array.prototype.copy) {
+    // return a deep copy of the array using JSON parse/stringify
+    Object.defineProperty(Array.prototype, 'copy', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function deepcopy(this: any[]): any[] {
+            return JSON.parse(JSON.stringify(this));
+        }
+    });
 }
 
 if (!Array.prototype.split) {
