@@ -10,7 +10,7 @@ var translate = (str:string, ex1:string, ex4: string) : string => {
     return "" + numbers[checks.indexOf(true)];
 }
 var translateDisplay = (display:string[][]) : string[][] => display.map(l => l.map(str => translate(str,get14(display)[0],get14(display)[1])));
-var displays = h.read(8,'displays.txt').map(d => d.split(/\s+\|\s+/).map((l:string)=> l.split(' ')));
+var displays = h.read(8,'displays.txt').split(/\s+\|\s+/).split(' ');
 var outputs = displays.map(d => d[1]);
 h.print('part 1: 1/4/7/8 in output: ',outputs.flat().filter(o => [2,4,3,7].includes(o.length)).length);
 

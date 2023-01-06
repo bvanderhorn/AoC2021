@@ -2,7 +2,7 @@ import * as h from "../helpers";
 var wins = (board:number[][], numbers:number[]) : boolean => (board.map(l => numbers.includesAll(l) ? 1 : 0).sum() > 0) || (board[0].range().map(c => numbers.includesAll(board.col(c)) ? 1 : 0).sum() > 0);
 var score =  (board:number[][], numbers:number[]) : number => board.flat().filter(x => !numbers.includes(x)).sum() * numbers.last();
 const input = h.read(4,'bingo.txt');
-const [numbers, boards] = [input[0][0].split(',').tonum(), input.slice(1).map(b => b.map((line:string) => line.trim().split(/\s+/).tonum()))];
+const [numbers, boards] = [input[0][0].split(',').tonum(), input.slice(1).trim().split(/\s+/).tonum()];
 
 // part 1/2
 var foundPart1 = false;

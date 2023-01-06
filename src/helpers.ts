@@ -23,16 +23,15 @@ export function simpleRead(day:number, filename:string, options:string ='') : st
 
     const fn = (example ? exampleString : '') + filename;
     print(' reading file: ',day,'/', fn);
-
     return fs.readFileSync(sourceFolder + day + '/' + fn, 'utf8');
 }
 
 export function read(day:number,filename:string, options:string='') : any[] {
-    // options
-    const tonum: boolean = options.includes('tonum');
-    
-    const input = simpleRead(day,filename,options).split('\r\n\r\n').map(el => el.split('\r\n').map(i => tonum ? +i : i));
-    return (input.length == 1) ? input[0] : input;
+    // read a file, split on double enters, then split on single enters
+    // if double enters: returns string[][]
+    // if no double enters: returns string[]
+    const input = simpleRead(day,filename,options).split('\r\n\r\n').map(el => el.split('\r\n'));
+    return input.length == 1 ?  input[0] : input;
 }
 
 export function print(...input:any[]) {

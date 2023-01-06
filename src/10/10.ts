@@ -16,5 +16,5 @@ var errorsCompletions : (number | string)[] = syntax.map(s => {
     return (opens.length > 0) ? opens.map(c => close[open.indexOf(c)]).reverse().join('') : 0;
 });
 h.print('part 1: sum of syntax error scores: ',errorsCompletions.filter(ec => typeof ec == 'number').sum());
-var acScores = errorsCompletions.filter(ec => typeof ec == 'string').map(s => acScore(s)).sortnum();
+var acScores = errorsCompletions.filter(ec => typeof ec == 'string').map(s => acScore(""+s)).sortnum();
 h.print('part 2: middle score: ',acScores[(acScores.length-1)/2]);

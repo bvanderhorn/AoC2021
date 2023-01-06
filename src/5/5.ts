@@ -14,7 +14,7 @@ var superExpand = (range:number[][]) : number[][] => isHorVert(range) ? h.expand
 var inBoth = (array1:number[][], array2:number[][]) : number[][] => array1.filter(el => h.contains(array2, el));
 
 console.time("day 5");
-var vents = h.read(5,'vents.txt').map((v:string) => v.trim().split(/\s+->\s+/).map((co:string) => co.split(',').tonum()));
+var vents = h.read(5,'vents.txt').trim().split(/\s+->\s+/).split(',').tonum();
 
 // part 1/2
 var part = 2;

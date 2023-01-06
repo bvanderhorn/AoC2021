@@ -21,6 +21,7 @@ declare global {
         min(): number;
         max(): number;
         split(str:(string|RegExp)): any[][];
+        trim() : any[];
     }
 }
 
@@ -44,6 +45,18 @@ if (!Array.prototype.tonum) {
         configurable: false, 
         value: function tonum(this: any[]): any[] {
             return this.map(str => typeof str == 'string' ? +str : str.tonum());
+        }
+    });
+}
+
+if (!Array.prototype.trim) {
+    /// trim all string elements recursively
+    Object.defineProperty(Array.prototype, 'trim', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function trim(this: any[]): any[] {
+            return this.map(str => str.trim());
         }
     });
 }

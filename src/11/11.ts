@@ -6,6 +6,6 @@ import * as h from "../helpers";
 //         return o + nb.map()
 //     }));
 // }
-var octopuses = h.read(11,'octopuses.txt').map(l => l.split('').tonum());
+var octopuses = h.read(11,'octopuses.txt').split('').tonum();
 h.print(octopuses.slice(0,2));
 h.print(["123|456","789|012"].split('|').split(''));
