@@ -23,7 +23,28 @@ declare global {
         split(str:(string|RegExp)): any[][];
         trim() : any[];
         copy() : any[];
+        unique(): any[];
     }
+}
+
+if (!Array.prototype.unique) {
+    // return a new array containing all distinct values in the original one
+    Object.defineProperty(Array.prototype, 'unique', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function unique(this: any[]): any[] {
+            var newArray:any[] = Array(this.length).fill(undefined);
+            var index = 0;
+            for (let i=0;i<this.length;i++) {
+                if (!newArray.includes2(this[i])) {
+                    newArray[index] = this[i];
+                    index++;
+                }
+            }
+            return newArray.slice(0,index);
+        }
+    });
 }
 
 if (!Array.prototype.copy) {
@@ -32,7 +53,7 @@ if (!Array.prototype.copy) {
         enumerable: false, 
         writable: false, 
         configurable: false, 
-        value: function deepcopy(this: any[]): any[] {
+        value: function copy(this: any[]): any[] {
             return JSON.parse(JSON.stringify(this));
         }
     });
@@ -179,7 +200,7 @@ if (!Array.prototype.includesAll) {
         writable: false, 
         configurable: false, 
         value: function includesAll(this: any[], array:any[]): boolean {
-            return array.every(v => this.includes(v));
+            return array.every(v => this.includes2(v));
         }
     });
 }
@@ -294,12 +315,17 @@ export function apply1(array: number[][], operation:string) : number[] {
     });
 }
 
-export function equals2(first: any[], second: any[]): boolean {
-    if (first.length != second.length) return false;
-    for (let i=0;i<first.length;i++) if (first[i] !== second[i]) return false;
-    return true;
+export function equals2(first: any, second: any): boolean {
+    var [fa, sa] = [Array.isArray(first),Array.isArray(second)];
+    if (!fa && !sa) return first === second;
+    if (fa && sa){
+        if (first.length != second.length) return false;
+        for (let i=0;i<first.length;i++) if (!equals2(first[i],second[i])) return false;
+        return true;
+    }
+    return false;
 }
 
-export function contains(array: any[][], element: any[]): boolean {
+export function contains(array: any[], element: any): boolean {
     return array.filter(el => equals2(el, element)).length >= 1;
 }
