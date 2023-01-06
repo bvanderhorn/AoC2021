@@ -80,18 +80,21 @@ export function expandTrace(trace:number[][]) : number[][] {
     return expTrace;
 }
 
-export function getNeighbours(pos:number[], dy:number[], dx:number[]): number[][] {
+export function getNeighbours(pos:number[], dy:number[], dx:number[],options=''): number[][] {
     // with Y being the primary (down) direction of the 2D map, and X being the secondary (right) one
     // dx, dy are in format [xMin, xMax] / [yMin, yMax]
-    let neighbours : number[][] = [];
+    let all = options.includes('8');
     let nb = [
         [pos[0]-1, pos[1]],
         [pos[0]+1, pos[1]],
         [pos[0], pos[1]-1],
         [pos[0], pos[1]+1]
     ];
-    for (const n of nb){
-        if (n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]) neighbours.push(n); 
-    }
-    return neighbours;
+    if (all) nb.push(
+        [pos[0]-1, pos[1]-1],
+        [pos[0]-1, pos[1]+1],
+        [pos[0]+1, pos[1]-1],
+        [pos[0]+1, pos[1]+1]
+    );
+    return nb.filter(n => n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]);
 }
