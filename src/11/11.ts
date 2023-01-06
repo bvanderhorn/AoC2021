@@ -1,6 +1,5 @@
-import { write } from "fs";
 import * as h from "../helpers";
-var up = (octos:number[][]) : number[][] => {
+var step = (octos:number[][]) : number[][] => {
     var newOctos = octos.plus(1);
     var todo: number[][] = newOctos.map((l,i) => l.map((o:number,j:number)=> o > 9 ? [i,j] : [-1,-1])).flat().filter(o => o[0] != -1);
     var visited: number[][] = [];
@@ -17,11 +16,14 @@ var up = (octos:number[][]) : number[][] => {
 }
 var stringOctos = (octos:number[][]) : string => octos.map(l => l.join('')).join('\r\n');
 var octopuses = h.read(11,'octopuses.txt').split('').tonum();
-var [flashes, newOctos, octolog] = [0, octopuses.copy(), ['original:\r\n' + stringOctos(octopuses)]];
-for (const t of h.range(1,101)) {
-    newOctos = up(newOctos);
-    flashes += newOctos.flat().count(0);
-    octolog.push('\r\nstep ' + t +' (' + newOctos.flat().count(0) +' flashes):\r\n'+ stringOctos(newOctos));
+var [t, flashes, newFlashes, newOctos, octolog] = [0, 0, 0, octopuses.copy(), ['original:\r\n' + stringOctos(octopuses)]];
+while (true) {
+    [t, newOctos] = [t+1, step(newOctos)];
+    newFlashes = newOctos.flat().count(0);
+    flashes += newFlashes;
+    octolog.push('\r\nstep ' + t +' (' + newFlashes +' flashes):\r\n'+ stringOctos(newOctos));
+    if (t==100) h.print('part 1: # flashes after 100 steps: ',flashes);
+    if (newFlashes == newOctos.flat().length) break;
 }
-h.print('# flashes: ',flashes);
+h.print('part 2: all octos flash on step: ',t);
 h.write(11,'octolog.txt',octolog.join('\r\n'));
