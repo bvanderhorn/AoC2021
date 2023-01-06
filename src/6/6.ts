@@ -6,7 +6,7 @@ var fishBucketsAfterDays  = (fish:number,days:number): number[] => toBuckets(fis
 var eachBucketAfterDays   = (days:number)            : number[][] => h.range(0,9).map(f => fishBucketsAfterDays(f,days));
 var addBuckets = (curBucket:number[], addEachBucket:number[][]) : number[] =>  h.range(0,9).map(f => addEachBucket[f].times(curBucket[f])).sum0();
 
-var fish = h.read(6,'fish.txt')[0].split(',').toInt();
+var fish = h.read(6,'fish.txt')[0].split(',').tonum();
 
 // part 1
 var fad = h.range(0,7).map(f => fishAfterDays(f,80));

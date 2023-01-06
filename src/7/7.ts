@@ -1,6 +1,6 @@
 import * as h from "../helpers";
 var posFuel = (crabs: number[],pos:number, part:number = 1) : number => crabs.map((c:number) => Math.abs(c-pos) * ((part==1) ? 1 :  ((Math.abs(c-pos)+1)/2))).sum();
-var crabs = h.read(7,'crabs.txt')[0].split(',').toInt();
+var crabs = h.read(7,'crabs.txt')[0].split(',').tonum();
 
 // part 1/2: newton search
 var part = 1;

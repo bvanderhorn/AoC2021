@@ -7,8 +7,8 @@ declare global {
         sum1(): number[];
         prod0(): number[];
         prod1(): number[];
-        toInt(): number[];
-        sortInt(): number[];
+        tonum(): any[];
+        sortnum(): number[];
         range(start:number): number[];
         range(): number[];
         col(column:number): any[];
@@ -20,28 +20,41 @@ declare global {
         last(): any;
         min(): number;
         max(): number;
+        split(str:(string|RegExp)): any[][];
     }
 }
 
-if (!Array.prototype.toInt) {
-    // cast all elements to int
-    Object.defineProperty(Array.prototype, 'toInt', {
+if (!Array.prototype.split) {
+    // split all string sub elements recursively
+    Object.defineProperty(Array.prototype, 'split', {
         enumerable: false, 
         writable: false, 
         configurable: false, 
-        value: function toInt(this: string[]): number[] {
-            return this.map(str => +str);
+        value: function split(this: any[],str:(string|RegExp)): any[][] {
+            return this.map(el => el.split(str));
         }
     });
 }
 
-if (!Array.prototype.sortInt) {
-    // sort number array ascending
-    Object.defineProperty(Array.prototype, 'sortInt', {
+if (!Array.prototype.tonum) {
+    // cast all elements to int recursively
+    Object.defineProperty(Array.prototype, 'tonum', {
         enumerable: false, 
         writable: false, 
         configurable: false, 
-        value: function sortInt(this: number[]): number[] {
+        value: function tonum(this: any[]): any[] {
+            return this.map(str => typeof str == 'string' ? +str : str.tonum());
+        }
+    });
+}
+
+if (!Array.prototype.sortnum) {
+    // sort number array ascending
+    Object.defineProperty(Array.prototype, 'sortnum', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function sortnum(this: number[]): number[] {
             return this.sort((a,b) => a-b);
         }
     });

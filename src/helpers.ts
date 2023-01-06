@@ -29,9 +29,9 @@ export function simpleRead(day:number, filename:string, options:string ='') : st
 
 export function read(day:number,filename:string, options:string='') : any[] {
     // options
-    const toInt: boolean = options.includes('toint');
+    const tonum: boolean = options.includes('tonum');
     
-    const input = simpleRead(day,filename,options).split('\r\n\r\n').map(el => el.split('\r\n').map(i => toInt ? +i : i));
+    const input = simpleRead(day,filename,options).split('\r\n\r\n').map(el => el.split('\r\n').map(i => tonum ? +i : i));
     return (input.length == 1) ? input[0] : input;
 }
 

@@ -1,6 +1,6 @@
 import * as h from "../helpers";
 var isHorVert = (range:number[][]) : boolean => (range[0][0] == range[1][0]) || (range[0][1] == range[1][1]);
-var minMax = (range:number[][]) : number[][] => [[range[0][0],range[1][0]].sortInt(), [range[0][1],range[1][1]].sortInt()];
+var minMax = (range:number[][]) : number[][] => [[range[0][0],range[1][0]].sortnum(), [range[0][1],range[1][1]].sortnum()];
 var possibleOverlap = (range1:number[][], range2:number[][]) : boolean => {
     var [dx1, dy1, dx2, dy2] = minMax(range1).concat(minMax(range2));
     return h.overlaps(dx1, dx2) && h.overlaps(dy1, dy2);
@@ -14,7 +14,7 @@ var superExpand = (range:number[][]) : number[][] => isHorVert(range) ? h.expand
 var inBoth = (array1:number[][], array2:number[][]) : number[][] => array1.filter(el => h.contains(array2, el));
 
 console.time("day 5");
-var vents = h.read(5,'vents.txt').map((v:string) => v.trim().split(/\s+->\s+/).map((co:string) => co.split(',').toInt()));
+var vents = h.read(5,'vents.txt').map((v:string) => v.trim().split(/\s+->\s+/).map((co:string) => co.split(',').tonum()));
 
 // part 1/2
 var part = 2;
