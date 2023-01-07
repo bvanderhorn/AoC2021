@@ -24,8 +24,22 @@ declare global {
         trim() : any[];
         copy() : any[];
         unique(): any[];
+	at(name:any): any;
     }
 }
+
+if(!Array.prototype.at) {
+	// return element [1] of subarray where [0] equals input
+	Object.defineProperty(Array.prototype, 'at', {
+	enumerable: false,
+	writable:false,
+	configurable: false,
+	value: function at(this: any[][], name: any) : any {
+	return this[this.col(0).indexOf(name)][1];
+	}
+});
+}
+
 
 if (!Array.prototype.unique) {
     // return a new array containing all distinct values in the original one

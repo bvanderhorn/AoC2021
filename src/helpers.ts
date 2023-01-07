@@ -30,7 +30,7 @@ export function read(day:number,filename:string, options:string='') : any[] {
     // read a file, split on double enters, then split on single enters
     // if double enters: returns string[][]
     // if no double enters: returns string[]
-    const input = simpleRead(day,filename,options).split('\r\n\r\n').map(el => el.split('\r\n'));
+    const input = simpleRead(day,filename,options).split('\n\n').map(el => el.split('\n'));
     return input.length == 1 ?  input[0] : input;
 }
 
@@ -98,6 +98,6 @@ export function getNeighbours(pos:number[], dy:number[], dx:number[],options='')
     return nb.filter(n => n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]);
 }
 
-export function eArray(len:number) : any[] {
-        return new Array(len).fill(undefined);
+export function eArray(len:number,fill:any = undefined) : any[] {
+        return new Array(len).fill(fill);
 }
