@@ -2,11 +2,9 @@ import * as h from "../helpers";
 var dijkstra = (map:number[][], start:number[], end:number[], updates:number) : number => {
   console.time("runtime");
   var [cy, cx] = map.dims();
-  var inf = 10000000;
-  var dist: number[][] = h.eArray(cy).map((_,i) => h.eArray(cx).map((_,j)=> h.equals2([i,j],start) ? 0 : inf));
-  var final = h.eArray(cy).map(_ => h.eArray(cx));
-  var ctr = 0;
-  var rem: any[] = [start.copy()];
+  var final: number[][] = h.eArray([cy,cx]), rem: any[] = [start], inf = 10000000, ctr = 0;
+  var dist: number[][] = h.eArray([cy,cx],inf);
+  dist[start[0]][start[1]] = 0;  
   while (rem.length > 0){
     rem = rem.sort((a,b) => dist[a[0]][a[1]] - dist[b[0]][b[1]]);
     let cur = rem.shift();
@@ -30,7 +28,6 @@ var dijkstra = (map:number[][], start:number[], end:number[], updates:number) : 
 var chitons = h.read(15, 'chitons.txt').split('').tonum();
 h.print('part 1: dist from ',[0,0], ' to ',chitons.dims().plus(-1),' : ', dijkstra(chitons,[0,0],chitons.dims().plus(-1),1));
 
-// part 2
 var chitons2 = chitons.map(c => c.concat(c.plus(1)).concat(c.plus(2)).concat(c.plus(3)).concat(c.plus(4)));
 chitons2 = chitons2.concat(chitons2.plus(1)).concat(chitons2.plus(2)).concat(chitons2.plus(3)).concat(chitons2.plus(4));
 chitons2 = chitons2.mod(9).map(l => l.map((c:number) => c === 0 ? 9 : c));

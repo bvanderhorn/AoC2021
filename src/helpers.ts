@@ -101,7 +101,8 @@ export function getNeighbours(pos:number[], dy:number[], dx:number[],options='')
     return nb.filter(n => n != undefined).filter(n => n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]);
 }
 
-export function eArray(len:number,fill:any = undefined) : any[] {
+export function eArray(len:number|number[],fill:any = undefined) : any[] {
+        if (Array.isArray(len)) return eArray(len[0]).map(_ => eArray(len[1],fill));
         return new Array(len).fill(fill);
 }
 
