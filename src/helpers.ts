@@ -30,7 +30,7 @@ export function read(day:number,filename:string, options:string='') : any[] {
     // read a file, split on double enters, then split on single enters
     // if double enters: returns string[][]
     // if no double enters: returns string[]
-    const input = simpleRead(day,filename,options).split('\n\n').map(el => el.split('\n'));
+    const input = simpleRead(day,filename,options).split(/\r?\n\r?\n/).map(el => el.split(/\r?\n/));
     return input.length == 1 ?  input[0] : input;
 }
 
