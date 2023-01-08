@@ -2,6 +2,7 @@ import * as h from "../helpers";
 var chitons = h.read(15, 'chitons.txt').split('').tonum();
 h.print(chitons.slice(0,2));
 var [cy, cx] = [chitons.length, chitons[0].length];
+h.print(cy,',',cx);
 var rem : any[] = h.eArray(cy).map((_,i) => h.eArray(cx).map((_,j)=> [[i,j],(i===0 && j===0) ? 0 : 10000000])).flat();
 var vst: any[] = [], ctr = 0;
 
