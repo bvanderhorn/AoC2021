@@ -10,7 +10,7 @@ var step = (buckets:number[], ins:string[][]) : number[] => {
 }
 var btol = (buckets:number[],letters:string[],pairs:string[],poly:string): number[] => letters.map(l => pairs.map((p,i)=> p.split('').count(l)*buckets[i]).sum() + [poly[0],poly.slice(-1)].count(l)).times(1/2);
 var [poly, ins] = h.read(14, 'polymers1.txt');
-ins = ins.split(' -> ').sort((a:string[],b:string[])=> a[0]<b[0] ? -1 : 1).filter((i:any[]) => i[0] != '');
+ins = ins.split(' -> ').sort((a:string[],b:string[])=> a[0]<b[0] ? -1 : 1);
 poly = poly[0];
 const pairs = ins.col(0);
 const letters = pairs.join('').split('').unique();
