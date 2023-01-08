@@ -14,7 +14,7 @@ var dijkstra = (map:number[][], start:number[], end:number[], updates:number) : 
       console.timeEnd("runtime");
       return curDist;
     }
-    let nb : number[][] = h.getNeighbours(cur,[0,cy-1],[0,cx-1]).filter(n => final[n[0]][n[1]] === undefined);
+    let nb : number[][] = h.getNeighbours(cur,[0,cy-1],[0,cx-1],'dr').filter(n => final[n[0]][n[1]] === undefined);
     for (const n of nb) {
       let [dn, ndist] = [map[n[0]][n[1]], dist[n[0]][n[1]]];
       if (ndist > curDist + dn) dist[n[0]][n[1]] = curDist + dn;
@@ -32,5 +32,4 @@ h.print('part 1: dist from ',[0,0], ' to ',chitons.dims().plus(-1),' : ', dijkst
 var chitons2 = chitons.map(c => c.concat(c.plus(1)).concat(c.plus(2)).concat(c.plus(3)).concat(c.plus(4)));
 chitons2 = chitons2.concat(chitons2.plus(1)).concat(chitons2.plus(2)).concat(chitons2.plus(3)).concat(chitons2.plus(4));
 chitons2 = chitons2.mod(9).map(l => l.map((c:number) => c === 0 ? 9 : c));
-// h.print(chitons2.map(l => l.join('')).join('\n'));
 h.print('part 2: dist from ',[0,0], ' to ',chitons2.dims().plus(-1),' : ', dijkstra(chitons2,[0,0],chitons2.dims().plus(-1),1000));

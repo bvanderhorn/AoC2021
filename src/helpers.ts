@@ -84,20 +84,20 @@ export function getNeighbours(pos:number[], dy:number[], dx:number[],options='')
     // dx, dy are in format [xMin, xMax] / [yMin, yMax]
     var all = options.includes('8');
     var filterDirs = options.includes('u') || options.includes('d') || options.includes('l') || options.includes('r');
-    var dirs = 'udlr';
-    if (filterDirs) dirs = dirs.split('').filter(d => options.includes(d)).join('');
+    var dirs = 'udlr'.split('');
+    if (filterDirs) dirs = dirs.filter(d => options.includes(d));
 
-    var nb: number[][] = eArray(8);
-    if (dirs.includes('u')) nb[0] = [pos[0]-1, pos[1]];
-    if (dirs.includes('d')) nb[1] = [pos[0]+1, pos[1]];
-    if (dirs.includes('l')) nb[2] = [pos[0]  , pos[1]-1];
-    if (dirs.includes('r')) nb[3] = [pos[0]  , pos[1]+1];
-    if (all) {
-        nb[4] = [pos[0]-1, pos[1]-1];
-        nb[5] = [pos[0]-1, pos[1]+1];
-        nb[6] = [pos[0]+1, pos[1]-1];
-        nb[7] = [pos[0]+1, pos[1]+1];
-    };
+    var nb:number[][] = [];
+    if (dirs.includes('u')) nb.push([pos[0]-1, pos[1]]);
+    if (dirs.includes('d')) nb.push([pos[0]+1, pos[1]]);
+    if (dirs.includes('l')) nb.push([pos[0]  , pos[1]-1]);
+    if (dirs.includes('r')) nb.push([pos[0]  , pos[1]+1]);
+    if (all) nb.push(
+        [pos[0]-1, pos[1]-1],
+        [pos[0]-1, pos[1]+1],
+        [pos[0]+1, pos[1]-1],
+        [pos[0]+1, pos[1]+1]
+    );
     return nb.filter(n => n != undefined).filter(n => n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]);
 }
 
