@@ -102,6 +102,6 @@ export function eArray(len:number,fill:any = undefined) : any[] {
         return new Array(len).fill(fill);
 }
 
-export function progress(counter:number,total:number) {
-  if (counter % Math.floor(total/100) === 0) print((counter/total*100).toPrecision(3),'% done');
+export function progress(counter:number,total:number, intervals:number = 100) {
+  if (counter % Math.floor(total/intervals) === 0) print((counter/total*100).toPrecision(3),'% done');
 }
