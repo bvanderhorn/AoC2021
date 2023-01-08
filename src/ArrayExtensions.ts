@@ -24,20 +24,34 @@ declare global {
         trim() : any[];
         copy() : any[];
         unique(): any[];
-	at(name:any): any;
+        dims(): number[];
+	    dict(name:any): any;
     }
 }
 
-if(!Array.prototype.at) {
+if(!Array.prototype.dict) {
 	// return element [1] of subarray where [0] equals input
-	Object.defineProperty(Array.prototype, 'at', {
+    // i.e, treats an Nx2 array as a dictionary
+	Object.defineProperty(Array.prototype, 'dict', {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function at(this: any[][], name: any) : any {
+	value: function dict(this: any[][], name: any) : any {
 	return this[this.col(0).indexOf(name)][1];
 	}
 });
+}
+
+if (!Array.prototype.dims) {
+    // return dimensions of 2D array
+    Object.defineProperty(Array.prototype, 'dims', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function dims(this: any[][]): number[] {
+            return [this.length, this[0].length];
+        }
+    });
 }
 
 

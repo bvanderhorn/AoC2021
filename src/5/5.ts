@@ -27,7 +27,7 @@ if (part == 1) {
 var dVents: number[][] = [];
 for (const i of vents.range(1)) {
     for (const j of h.range(0,i)) if (possibleOverlap(vents[i],vents[j])) dVents = dVents.concat(inBoth(expanded[i], expanded[j]));
-    if ((i%Math.floor(vents.length/10)) == 0) h.print((i/vents.length*100).toPrecision(2),'% done');
+    h.progress(i,vents.length,10);
 }
 h.print('part ',part,' => unique dangerous vents: ',h.uniqueArray(dVents).length);
 console.timeEnd("day 5");
