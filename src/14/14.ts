@@ -17,10 +17,12 @@ const letters = pairs.join('').split('').unique();
 var ibuckets: number[] = h.eArray(pairs.length,0);
 for (let i=1;i<poly.length;i++) ibuckets[pairs.indexOf(poly.slice(i-1,i+1))]++;
 var buckets = ibuckets.copy();
-for (const i of h.range(0,10)) buckets = step(buckets,ins);
-var fletters = btol(buckets,letters,pairs,poly);
-h.print(poly);
+var letters1:number[] = [];
+for (const i of h.range(0,40)) {
+  buckets = step(buckets,ins);
+  if (i==9) letters1 = btol(buckets,letters,pairs,poly);
+}
+var letters2 = btol(buckets,letters,pairs,poly);
 h.print(letters);
-h.print();
-//h.print(pairs.map((p:string,i:number)=> p+ibuckets[i]).filter((p:string) => !p.includes('0')));
-h.print('part 1: most common ',fletters.max(),' minus least common ',fletters.min(),' = ',fletters.max() - fletters.min());
+h.print('part 1: after 10 steps: most common ',letters1.max(),' minus least common ',letters1.min(),' = ',letters1.max() - letters1.min());
+h.print('part 2: after 40 steps: most common ',letters2.max(),' minus least common ',letters2.min(),' = ',letters2.max() - letters2.min());
