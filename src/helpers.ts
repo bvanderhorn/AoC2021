@@ -101,3 +101,7 @@ export function getNeighbours(pos:number[], dy:number[], dx:number[],options='')
 export function eArray(len:number,fill:any = undefined) : any[] {
         return new Array(len).fill(fill);
 }
+
+export function progress(counter:number,total:number) {
+  if (counter % Math.floor(total/100) === 0) print((counter/total*100).toPrecision(3),'% done');
+}
