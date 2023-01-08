@@ -14,6 +14,7 @@ declare global {
         col(column:number): any[];
         times(t: number) : any[];
         plus(p:number) : any[];
+        mod(m:number) : any[];
         count(element:any): number;
         includesAll(array: any[]) : boolean;
         includes2(array: any[]) : boolean;
@@ -191,6 +192,18 @@ if (!Array.prototype.plus) {
         configurable: false, 
         value: function plus(this: any[], p:number): any[] {
             return this.map(el => ["string","number"].includes(typeof el) ? el + p : el.plus(p));
+        }
+    });
+}
+
+if (!Array.prototype.mod) {
+    // take the modulo of each element with a scalar (recursively)
+    Object.defineProperty(Array.prototype, 'mod', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function mod(this: any[], m:number): any[] {
+            return this.map(el => typeof el == "number" ? el % m : el.mod(m));
         }
     });
 }

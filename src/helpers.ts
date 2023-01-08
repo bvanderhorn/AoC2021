@@ -82,20 +82,23 @@ export function expandTrace(trace:number[][]) : number[][] {
 export function getNeighbours(pos:number[], dy:number[], dx:number[],options=''): number[][] {
     // with Y being the primary (down) direction of the 2D map, and X being the secondary (right) one
     // dx, dy are in format [xMin, xMax] / [yMin, yMax]
-    let all = options.includes('8');
-    let nb = [
-        [pos[0]-1, pos[1]],
-        [pos[0]+1, pos[1]],
-        [pos[0], pos[1]-1],
-        [pos[0], pos[1]+1]
-    ];
-    if (all) nb.push(
-        [pos[0]-1, pos[1]-1],
-        [pos[0]-1, pos[1]+1],
-        [pos[0]+1, pos[1]-1],
-        [pos[0]+1, pos[1]+1]
-    );
-    return nb.filter(n => n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]);
+    var all = options.includes('8');
+    var filterDirs = options.includes('u') || options.includes('d') || options.includes('l') || options.includes('r');
+    var dirs = 'udlr';
+    if (filterDirs) dirs = dirs.split('').filter(d => options.includes(d)).join('');
+
+    var nb: number[][] = eArray(8);
+    if (dirs.includes('u')) nb[0] = [pos[0]-1, pos[1]];
+    if (dirs.includes('d')) nb[1] = [pos[0]+1, pos[1]];
+    if (dirs.includes('l')) nb[2] = [pos[0]  , pos[1]-1];
+    if (dirs.includes('r')) nb[3] = [pos[0]  , pos[1]+1];
+    if (all) {
+        nb[4] = [pos[0]-1, pos[1]-1];
+        nb[5] = [pos[0]-1, pos[1]+1];
+        nb[6] = [pos[0]+1, pos[1]-1];
+        nb[7] = [pos[0]+1, pos[1]+1];
+    };
+    return nb.filter(n => n != undefined).filter(n => n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]);
 }
 
 export function eArray(len:number,fill:any = undefined) : any[] {
