@@ -35,8 +35,8 @@ var getnextpacket = (bin:string) : [packet, string] => {
             }
         }
         let cv = children.map(c => c.value);
-        let values = [cv.sum(), cv.prod(), cv.min(), cv.max(), 0, cv[0]>cv[1] ?1:0, cv[0]<cv[1] ?1:0, cv[0]==cv[1] ?1:0 ];
-        value = values[t];
+        let values = [cv.sum(), cv.prod(), cv.min(), cv.max(), 0, cv[0]>cv[1], cv[0]<cv[1], cv[0]==cv[1]];
+        value = +values[t];
     }
     return [{v:v, t:t, i:i, nsb:nsb, nsp:nsp, subbits:subbits, value:value, children:children}, rem];
 }
