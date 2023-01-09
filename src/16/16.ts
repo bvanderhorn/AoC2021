@@ -42,9 +42,8 @@ var getnextpacket = (bin:string) : [packet, string] => {
 }
 var hex2bin = (hex:string): string => hex.split('').map(e => parseInt(e, 16).toString(2).padStart(4, '0')).join('');
 var versionsum = (pack:packet) : number => pack.v + pack.children.map(c => versionsum(c)).sum();
-var ipackets = h.read(16,'packet.txt');
-var bins = ipackets.map(p => hex2bin(p));
+var bins = h.read(16,'packet.txt').map(p => hex2bin(p));
 var packs = bins.map(b => getnextpacket(b)).col(0);
-// h.print(h.stringify(packs[0]));
+h.write(16,'packet.json',h.stringify(packs[0]));
 h.print('part 1: sum of versions: ', packs.map(p => versionsum(p)));
 h.print('part 2: value of main packet: ', packs.map(p => p.value));
