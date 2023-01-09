@@ -5,7 +5,7 @@ var step = (octos:number[][]) : number[][] => {
     var visited: number[][] = [];
     while(todo.length > 0) {
         var current:number[] = todo.shift() ?? [-1,-1];
-        var nb = h.getNeighbours(current,[0,newOctos.length-1],[0,newOctos[0].length-1],'8');
+        var nb = h.getnb(current,[0,newOctos.length-1],[0,newOctos[0].length-1],'8');
         nb.forEach(n => {
             newOctos[n[0]][n[1]]++;
             if (newOctos[n[0]][n[1]]>9 && !todo.concat(visited).includes2(n)) todo.push(n);

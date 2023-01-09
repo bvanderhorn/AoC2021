@@ -46,7 +46,7 @@ export function uniqueSimple(array: any[]) : any[] {
     return [...new Set(array)];
 }
 
-export function uniqueArray(array: number[][]) {
+export function uniquea(array: number[][]) {
     // from https://stackoverflow.com/a/66420296/1716283
     return Array.from(
         new Map(array.map((p) => [JSON.stringify(p), p])).values()
@@ -79,7 +79,7 @@ export function expandTrace(trace:number[][]) : number[][] {
     return expTrace;
 }
 
-export function getNeighbours(pos:number[], dy:number[], dx:number[],options=''): number[][] {
+export function getnb(pos:number[], dy:number[], dx:number[],options=''): number[][] {
     // with Y being the primary (down) direction of the 2D map, and X being the secondary (right) one
     // dx, dy are in format [xMin, xMax] / [yMin, yMax]
     var all = options.includes('8');
@@ -101,8 +101,9 @@ export function getNeighbours(pos:number[], dy:number[], dx:number[],options='')
     return nb.filter(n => n != undefined).filter(n => n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]);
 }
 
-export function eArray(len:number|number[],fill:any = undefined) : any[] {
-        if (Array.isArray(len)) return eArray(len[0]).map(_ => eArray(len[1],fill));
+export function ea(len:number|number[],fill:any = undefined) : any[] {
+        if (Array.isArray(len) && len.length > 1) return ea(len[0]).map(_ => ea(len.slice(1),fill));
+        if (Array.isArray(len)) return ea(len[0],fill);
         return new Array(len).fill(fill);
 }
 

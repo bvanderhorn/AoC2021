@@ -27,7 +27,47 @@ declare global {
         unique(): any[];
         dims(): number[];
 	    dict(name:any): any;
+        mapij(make:(i:number, j:number,x:any) => any) : any[][];
+        mape(make: (x:any) => any) : any[];
+        print() : string;
     }
+}
+
+if(!Array.prototype.print) {
+	// combine all elements of a 2D string array to a single, printable string
+	Object.defineProperty(Array.prototype, 'print', {
+	enumerable: false,
+	writable:false,
+	configurable: false,
+	value: function print(this: string[][]) : string {
+        return this.map(l=> l.join('')).join('\n');
+        }
+    });
+}
+
+if(!Array.prototype.mape) {
+	// map each element x of an array recursively
+	Object.defineProperty(Array.prototype, 'mape', {
+	enumerable: false,
+	writable:false,
+	configurable: false,
+	value: function mape(this: any[][], make:(x:any) => any) : any[] {
+        return this.map(e =>  Array.isArray(e) ? e.mape(make) : make(e));
+        }
+    });
+}
+
+if(!Array.prototype.mapij) {
+	// map each element x of a 2-D array to a new value using 
+    // its primary (i) and secondary (j) coordinates
+	Object.defineProperty(Array.prototype, 'mapij', {
+	enumerable: false,
+	writable:false,
+	configurable: false,
+	value: function mapij(this: any[][], make:(i:number, j:number,x:any) => any) : any[][] {
+        return this.map((l,ii) => l.map((e,jj) => make(ii,jj,e)));
+        }
+    });
 }
 
 if(!Array.prototype.dict) {
@@ -38,9 +78,9 @@ if(!Array.prototype.dict) {
 	writable:false,
 	configurable: false,
 	value: function dict(this: any[][], name: any) : any {
-	return this[this.col(0).indexOf(name)][1];
-	}
-});
+        return this[this.col(0).indexOf(name)][1];
+        }
+    });
 }
 
 if (!Array.prototype.dims) {
@@ -54,7 +94,6 @@ if (!Array.prototype.dims) {
         }
     });
 }
-
 
 if (!Array.prototype.unique) {
     // return a new array containing all distinct values in the original one

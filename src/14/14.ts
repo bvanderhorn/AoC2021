@@ -1,6 +1,6 @@
 import * as h from "../helpers";
 var step = (buckets:number[], ins:string[][]) : number[] => {
-  var newb:number[] = h.eArray(buckets.length, 0);
+  var newb:number[] = h.ea(buckets.length, 0);
   for (const i of buckets.range()) {
     let [pair,to] = ins[i];
     newb[ins.col(0).indexOf(pair[0]+to)] += buckets[i];
@@ -14,7 +14,7 @@ ins = ins.split(' -> ').sort((a:string[],b:string[])=> a[0]<b[0] ? -1 : 1);
 poly = poly[0];
 const pairs = ins.col(0);
 const letters = pairs.join('').split('').unique();
-var ibuckets: number[] = h.eArray(pairs.length,0);
+var ibuckets: number[] = h.ea(pairs.length,0);
 for (let i=1;i<poly.length;i++) ibuckets[pairs.indexOf(poly.slice(i-1,i+1))]++;
 var buckets = ibuckets.copy();
 var letters1:number[] = [];
