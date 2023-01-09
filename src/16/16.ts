@@ -1,8 +1,8 @@
 import * as h from "../helpers";
-type packet = {v: number, t: number, i:number, nsb:number, nsp:number, subbits:string, litvalue:number, children:packet[]};
+type packet = {v: number, t: number, i:number, nsb:number, nsp:number, subbits:string, value:number, children:packet[]};
 var getnextpacket = (bin:string) : [packet, string] => {
     var [v,t, rem] = [parseInt(bin.slice(0,3),2), parseInt(bin.slice(3,6),2), bin.slice(6)];
-    var [i,nsb, nsp, subbits, lstr, litvalue, remstring] = [-1,-1,-1,'','',-1,''];
+    var [i,nsb, nsp, subbits,  value] = [-1,-1,-1,'',-1];
     var children:packet[] = [];
     if (t===4) {
         var lv:string[] = [];
@@ -12,7 +12,7 @@ var getnextpacket = (bin:string) : [packet, string] => {
             lv.push(x.slice(1));
             if (x[0] === '0') break;
         }
-        litvalue = parseInt(lv.join(''),2); 
+        value = parseInt(lv.join(''),2); 
     } else {
         i = +rem[0];
         if (i===0) {
@@ -34,14 +34,17 @@ var getnextpacket = (bin:string) : [packet, string] => {
                 children.push(child);
             }
         }
+        let cv = children.map(c => c.value);
+        let values = [cv.sum(), cv.prod(), cv.min(), cv.max(), 0, cv[0]>cv[1] ?1:0, cv[0]<cv[1] ?1:0, cv[0]==cv[1] ?1:0 ];
+        value = values[t];
     }
-    return [{v:v, t:t, i:i, nsb:nsb, nsp:nsp, subbits:subbits, litvalue:litvalue, children:children}, rem];
+    return [{v:v, t:t, i:i, nsb:nsb, nsp:nsp, subbits:subbits, value:value, children:children}, rem];
 }
 var hex2bin = (hex:string): string => hex.split('').map(e => parseInt(e, 16).toString(2).padStart(4, '0')).join('');
 var versionsum = (pack:packet) : number => pack.v + pack.children.map(c => versionsum(c)).sum();
-var ipacket = h.read(16,'packet.txt');
-var bin = ipacket.map(p => hex2bin(p));
-var packs = bin.map(b => getnextpacket(b)).col(0);
-h.print(ipacket);
-// h.print(h.stringify(packs[3]));
-h.print('part 1: sum of versions: ',packs.map(p => versionsum(p)));
+var ipackets = h.read(16,'packet.txt');
+var bins = ipackets.map(p => hex2bin(p));
+var packs = bins.map(b => getnextpacket(b)).col(0);
+// h.print(h.stringify(packs[0]));
+h.print('part 1: sum of versions: ', packs.map(p => versionsum(p)));
+h.print('part 2: value of main packet: ', packs.map(p => p.value));
