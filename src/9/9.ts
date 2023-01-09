@@ -5,7 +5,7 @@ var isLocalMin = (map:number[][], pos:number[], dy: number[], dx:number[]) : boo
 }
 var map: number[][] = h.read(9,'map.txt').split('').tonum();
 var [dy, dx] = [[0,map.length-1], [0, map[0].length-1]];
-h.print('part 1: sum of local minima risk levels: ',map.map((l,i) => l.map((p,j) => isLocalMin(map, [i,j], dy, dx) ? p+1 : 0)).sum1().sum());
+h.print('part 1: sum of local minima risk levels: ',map.mapij((i,j,p) => isLocalMin(map, [i,j], dy, dx) ? p+1 : 0).sum1().sum());
 
 // part 2
 var backlog = map.mapij((i,j,p) => p != 9 ? [i,j] : [-1,-1]).flat().filter(c => c[0] != -1);

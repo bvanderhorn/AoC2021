@@ -79,9 +79,11 @@ export function expandTrace(trace:number[][]) : number[][] {
     return expTrace;
 }
 
-export function getnb(pos:number[], dy:number[], dx:number[],options=''): number[][] {
+export function getnb(pos:number[], dyi:number[]|number, dxi:number[]|number,options=''): number[][] {
     // with Y being the primary (down) direction of the 2D map, and X being the secondary (right) one
     // dx, dy are in format [xMin, xMax] / [yMin, yMax]
+    var dx = Array.isArray(dxi) ? dxi : [0,dxi];
+    var dy = Array.isArray(dyi) ? dyi : [0,dyi];
     var all = options.includes('8');
     var filterDirs = options.includes('u') || options.includes('d') || options.includes('l') || options.includes('r');
     var dirs = 'udlr'.split('');

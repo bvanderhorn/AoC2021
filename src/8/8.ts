@@ -9,7 +9,7 @@ var translate = (str:string, ex1:string, ex4: string) : string => {
     var checks = [sl==2, sl==4, sl==3, sl==7, sl==6 && sw1==1, sl==6 && sw4==4, sl==6, sl==5 && sw1==2, sl==5 && sw4==2, true];
     return "" + numbers[checks.indexOf(true)];
 }
-var translateDisplay = (display:string[][]) : string[][] => display.map(l => l.map(str => translate(str,get14(display)[0],get14(display)[1])));
+var translateDisplay = (display:string[][]) : string[][] => display.mape(str => translate(str,get14(display)[0],get14(display)[1]));
 var displays = h.read(8,'displays.txt').split(/\s+\|\s+/).split(' ');
 var outputs = displays.map(d => d[1]);
 h.print('part 1: 1/4/7/8 in output: ',outputs.flat().filter(o => [2,4,3,7].includes(o.length)).length);

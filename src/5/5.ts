@@ -29,5 +29,5 @@ for (const i of vents.range(1)) {
     for (const j of h.range(0,i)) if (possibleOverlap(vents[i],vents[j])) dVents = dVents.concat(inBoth(expanded[i], expanded[j]));
     h.progress(i,vents.length,10);
 }
-h.print('part ',part,' => unique dangerous vents: ',h.uniquea(dVents).length);
+h.print('part ',part,' => unique dangerous vents: ',dVents.unique().length);
 console.timeEnd("day 5");

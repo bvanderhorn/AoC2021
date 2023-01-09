@@ -39,7 +39,7 @@ if(!Array.prototype.print) {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function print(this: string[][]) : string {
+	value: function print(this: any[][]) : string {
         return this.map(l=> l.join('')).join('\n');
         }
     });
@@ -218,7 +218,7 @@ if (!Array.prototype.times) {
         writable: false, 
         configurable: false, 
         value: function times(this: any[], t:number): any[] {
-            return this.map(el => (typeof el === "number") ? el * t : el.times(t));
+            return this.map(el => Array.isArray(el) ? el.times(t) : el * t);
         }
     });
 }
@@ -230,7 +230,7 @@ if (!Array.prototype.plus) {
         writable: false, 
         configurable: false, 
         value: function plus(this: any[], p:number): any[] {
-            return this.map(el => ["string","number"].includes(typeof el) ? el + p : el.plus(p));
+            return this.map(el => Array.isArray(el) ? el.plus(p) : el + p);
         }
     });
 }
@@ -242,7 +242,7 @@ if (!Array.prototype.mod) {
         writable: false, 
         configurable: false, 
         value: function mod(this: any[], m:number): any[] {
-            return this.map(el => typeof el == "number" ? el % m : el.mod(m));
+            return this.map(el => Array.isArray(el) ? el.mod(m) : el % m);
         }
     });
 }

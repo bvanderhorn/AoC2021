@@ -8,7 +8,7 @@ const [gamma, epsilon] = [majorities(arrays).join(''), minorities(arrays).join('
 h.print('gamma: ',gamma, ', epsilon: ',epsilon,' => product: ',parseInt(gamma,2)*parseInt(epsilon,2));
 
 // part 2
-var [ox, co] = [arrays.map(el => el), arrays.map(el => el)];
+var [ox, co] = [arrays.copy(), arrays.copy()];
 for (let i=0; i<arrays[0].length; i++) {
     ox = ox.filter(el => el[i] === majorities(ox)[i]);
     if (co.length > 1) co = co.filter(el => el[i] === minorities(co)[i]);

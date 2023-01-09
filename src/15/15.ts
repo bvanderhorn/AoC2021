@@ -13,7 +13,7 @@ var dijkstra = (map:number[][], start:number[], end:number[], updates:number) : 
       console.timeEnd("runtime");
       return curDist;
     }
-    let nb : number[][] = h.getnb(cur,[0,cy-1],[0,cx-1]).filter(n => final[n[0]][n[1]] === undefined);
+    let nb : number[][] = h.getnb(cur,cy-1,cx-1).filter(n => final[n[0]][n[1]] === undefined);
     for (const n of nb) {
       let [dn, ndist] = [map[n[0]][n[1]], dist[n[0]][n[1]]];
       if (ndist === inf) rem.push(n);
