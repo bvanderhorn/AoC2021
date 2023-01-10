@@ -12,7 +12,13 @@ h.print('part 1: vymax = ',vymax, ' => ',vymax*(vymax+1)/2);
 var [xmaxsteps, ymaxsteps] = [vxmin, 2*vymax + 2];
 var maxsteps = [xmaxsteps, ymaxsteps].max();
 var [steps, xrange, yrange] = [h.range(1, maxsteps+1), h.range(xmin, xmax+1), h.range(ymin, ymax+1)];
-var vxSteps = h.range(vxmin, vxmax+1).map(v => [v, steps.map(s => xrange.includes(posaftersteps(v,s,'x')) ? s : 0).filter(s => s > 0)]).filter(vs => vs[1].length > 0);
+
+//var vxSteps = h.range(vxmin, vxmax+1).map(v => [v, steps.map(s => xrange.includes(posaftersteps(v,s,'x')) ? s : 0).filter(s => s > 0)]).filter(vs => vs[1].length > 0);
+var vxSteps: [number, number[]][] = h.range(vxmin, vxmax+1).map(v => [v, steps.map(s => xrange.includes(posaftersteps(v,s,'x')) ? s : 0).filter(s => s > 0)]);
+h.print(vxSteps.length);
+vxSteps = vxSteps.filter(vs => vs[1].length > 0);
+h.print(vxSteps.length);
+h.print(vxSteps[0][1]);
 h.print([xmin, xmax, ymin, ymax]);
 h.print([vxmin, vxmax, vymin, vymax]);
 h.print([xmaxsteps, ymaxsteps]);
