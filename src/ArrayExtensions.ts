@@ -274,9 +274,17 @@ if (!Array.prototype.includes2) {
     });
 }
 
-if (!Array.prototype.includesAny) {                 // check if array includes any element of second array                                         
-	Object.defineProperty(Array.prototype, 'includesAny', {                                             enumerable: false,                              writable: false,                                configurable: false,                            value: function includesAny(this: any[], array:any[]): boolean {                                    return  this.some(r => array.includes(r));          
-         }                                           });                                         }
+if (!Array.prototype.includesAny) {
+    // check if array includes any element of second array                                         
+	Object.defineProperty(Array.prototype, 'includesAny', {
+        enumerable: false,
+        writable: false,
+        configurable: false,
+        value: function includesAny(this: any[], array:any[]): boolean {
+            return  this.some(r => array.includes2(r));
+         }
+    });
+}
 
 if (!Array.prototype.includesAll) {
     // check if array includes all elements of second array
