@@ -1,5 +1,4 @@
 import * as h from "../helpers";
-var sfn = h.read(18,'sfnumbers.txt');
 var puresf = (sf:string):number[] => sf.slice(1,sf.length-1).split(',').tonum();
 var addtonum = (str:string, num:number, last:boolean = false) : string => {
   var index = last ? str.search(/(\d+)(?!\D*\d)/) : str.search(/\d/);
@@ -53,10 +52,9 @@ var magnitude = (sf:string) : number => {
   return +sfnew;
 }
 
-h.print(sfn.slice(0,2));
-h.print(addtonum('[[34,5]]]',12));
-h.print(addtonum('[[34,28',12,true));
-h.print(explode(explode('[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]')));
-h.print(split(explode(explode(split(split('[[[[0,7],4],[15,[0,13]]],[1,1]]'))))));
-h.print(add('[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]]','[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]'));
-h.print(magnitude('[[[[0,7],4],[[7,8],[6,0]]],[8,1]]'));
+console.time("day 18");
+var sfn = h.read(18,'sfnumbers.txt');
+var cur = sfn[0];
+for (const i of h.range(1,sfn.length)) cur = add(cur, sfn[i]);
+h.print('part 1: final sum magnitude: ',magnitude(cur));
+console.timeEnd("day 18");
