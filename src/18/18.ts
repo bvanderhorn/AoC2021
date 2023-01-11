@@ -57,4 +57,6 @@ var sfn = h.read(18,'sfnumbers.txt');
 var cur = sfn[0];
 for (const i of h.range(1,sfn.length)) cur = add(cur, sfn[i]);
 h.print('part 1: final sum magnitude: ',magnitude(cur));
+var maxsum = sfn.map(sf1 => sfn.map(sf2 => magnitude(add(sf1,sf2))).max()).max();
+h.print('part 2: largest magnitude of sum of any two snailfish numbers: ',maxsum);
 console.timeEnd("day 18");
