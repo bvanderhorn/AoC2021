@@ -1,10 +1,13 @@
 // coloring
 export const cOff = '\x1b[0m';
-export const cWhite = '\x1b[37m';
-export const cGreen = '\x1b[32m';
-export const cRed = '\x1b[31m';
-export const cYellow = '\x1b[33m';
-export const cCyan = '\x1b[36m';
+export const black = "\x1b[30m"
+export const red = "\x1b[31m"
+export const green = "\x1b[32m"
+export const yellow = "\x1b[33m"
+export const blue = "\x1b[34m"
+export const magenta = "\x1b[35m"
+export const cyan = "\x1b[36m"
+export const white = "\x1b[37m"
 
 export {}
 declare global {
@@ -69,8 +72,8 @@ if(!Array.prototype.printcolor) {
 	writable:false,
 	configurable: false,
 	value: function printcolor(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : string {
-            var startc = [cWhite, cGreen, cRed, cYellow, cCyan];
-            var colors = ['w','g','r','y','c'];
+            var startc = [white, green, red, yellow, cyan, blue, magenta];
+            var colors = ['w','g','r','y','c', 'b','m'];
             var end = cOff;
             var start:string = startc[colors.indexOf(color)];
             return this.map(l=> l.map(x => matches(x) ? `${start}${x}${end}`: `${x}`).join(j1)).join(j2);
