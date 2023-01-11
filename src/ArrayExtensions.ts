@@ -1,3 +1,11 @@
+// coloring
+export const cOff = '\x1b[0m';
+export const cWhite = '\x1b[37m';
+export const cGreen = '\x1b[32m';
+export const cRed = '\x1b[31m';
+export const cYellow = '\x1b[33m';
+export const cCyan = '\x1b[36m';
+
 export {}
 declare global {
     interface Array<T>  {
@@ -32,6 +40,12 @@ declare global {
         mapij(make:(i:number, j:number,x:any) => any) : any[][];
         mape(make: (x:any) => any) : any[];
         print() : string;
+        print(j1:string) : string;
+        print(j1:string, j2:string) : string;
+
+        printcolor(matches: (x: any) => boolean, color:string) : string;
+        printcolor(matches: (x: any) => boolean, color:string,j1:string) : string;
+        printcolor(matches: (x: any) => boolean, color:string,j1:string, j2:string) : string;
         subfilter(matches: (x: any) => boolean) : any[][];
     }
 }
@@ -42,8 +56,24 @@ if(!Array.prototype.print) {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function print(this: any[][]) : string {
-        return this.map(l=> l.join('')).join('\n');
+	value: function print(this: any[][], j1:string = '',j2:string='\n') : string {
+            return this.map(l=> l.join(j1)).join(j2);
+        }
+    });
+}
+
+if(!Array.prototype.printcolor) {
+	// do a print but specify if a given element should be printed with a given color
+	Object.defineProperty(Array.prototype, 'printcolor', {
+	enumerable: false,
+	writable:false,
+	configurable: false,
+	value: function printcolor(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : string {
+            var startc = [cWhite, cGreen, cRed, cYellow, cCyan];
+            var colors = ['w','g','r','y','c'];
+            var end = cOff;
+            var start:string = startc[colors.indexOf(color)];
+            return this.map(l=> l.map(x => matches(x) ? `${start}${x}${end}`: `${x}`).join(j1)).join(j2);
         }
     });
 }
