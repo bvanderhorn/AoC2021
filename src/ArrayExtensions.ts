@@ -18,7 +18,8 @@ declare global {
         count(element:any): number;
         includesAll(array: any[]) : boolean;
         includes2(array: any[]) : boolean;
-	includesAny(array: any[]) : boolean;
+	    includesAny(array: any[]) : boolean;
+        shared(array: any[]) : any[];
         last(): any;
         min(): number;
         max(): number;
@@ -31,6 +32,7 @@ declare global {
         mapij(make:(i:number, j:number,x:any) => any) : any[][];
         mape(make: (x:any) => any) : any[];
         print() : string;
+        subfilter(matches: (x: any) => boolean) : any[][];
     }
 }
 
@@ -54,6 +56,18 @@ if(!Array.prototype.mape) {
 	configurable: false,
 	value: function mape(this: any[][], make:(x:any) => any) : any[] {
         return this.map(e =>  Array.isArray(e) ? e.mape(make) : make(e));
+        }
+    });
+}
+
+if(!Array.prototype.subfilter) {
+    // apply filter on each sub-array in a 2D array
+	Object.defineProperty(Array.prototype, 'subfilter', {
+	enumerable: false,
+	writable:false,
+	configurable: false,
+	value: function subfilter(this: any[][], matches:(x:any) => boolean) : any[][] {
+            return this.map(l => l.filter(x => matches(x)));
         }
     });
 }
@@ -271,6 +285,18 @@ if (!Array.prototype.includes2) {
         value: function includes2(this: any[][], array:any[]): boolean {
             return contains(this, array);
         }
+    });
+}
+
+if (!Array.prototype.shared) {
+    // returns new array that contains all unique elements which are in both the first and second array                                        
+	Object.defineProperty(Array.prototype, 'shared', {
+        enumerable: false,
+        writable: false,
+        configurable: false,
+        value: function shared(this: any[], array:any[]): any[] {
+            return  this.filter(x => array.includes2(x)).unique();
+         }
     });
 }
 
