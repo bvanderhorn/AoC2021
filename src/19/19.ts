@@ -14,7 +14,9 @@ var distances: number[][][] = scanners.map(s => dists(s));
 var dcs : number[][][][] = distances.map(d1 => distances.map(d2 => distcomparison(d1,d2)));
 var matching: number[][] = dcs.map((dc,i)=> matchingscanners(dc,i));
 var pointmatches: [number, number[][]][][] = matching.map((l,i)=> l.map(m => [m,pointmatch(dcs[i][m])]));
-var uniquepoints : number = scanners.map(s => s.length).sum() - pointmatches.map((pm,i) => sharedwithearlier(pm,i)).sum();
+var pmshared = pointmatches.map((pm,i) => sharedwithearlier(pm,i));
+var tp = scanners.map(s => s.length).sum();
+var uniquepoints : number = tp - pointmatches.map((pm,i) => sharedwithearlier(pm,i)).sum();
 
 // showing some stuff
 var pm09 : [number, number[][]]= pointmatches[0][0];
@@ -23,7 +25,13 @@ var pointpairs09 = pm09[1].map(pp => [scanners[0][pp[0]], scanners[pm09[0]][pp[1
 h.print(dcs[0][9].printcolor(x => x>=12,'r',','));
 h.print(pointmatch(dcs[0][9]));
 h.print(matching);
-h.print(pointmatches.slice(0,1).map(l => JSON.stringify(l)));
 h.print(pointpairs09);
-h.print('part 1: unique points: ',uniquepoints);
+
+var pmtest = pointmatches[10];
+h.print(pmtest.map(l => JSON.stringify(l) ));
+
+h.write(19,'pointmatches.json',h.stringify(pointmatches));
+
+h.print();
+h.print('part 1: total points detected: ', tp,', shared points: ', pmshared.sum(), ', total unique: ',tp - pmshared.sum());
 console.timeEnd("day 19");
