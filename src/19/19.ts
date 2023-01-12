@@ -6,13 +6,17 @@ var potentialcount = (comparison:number[][]) : number => comparison.map(d => d.m
 var matchingscanners = (comparisons: number[][][], scannerIndex:number) : number[] => 
     comparisons.map(dc => potentialcount(dc)).map((c,i) => c>= 12 ? i : -1).filter(i => i >=0 && i !== scannerIndex);
 var pointmatch = (comparison: number[][]) : number[][] => comparison.map((c,i) => [i, c.findIndex(x => x>=12)]).filter(pp => pp[1]>=0);
+var sharedwithearlier = (pointmatch: [number, number[][]][], index: number) : number => pointmatch.filter(pm => pm[0] < index).map(pm => pm[1].col(0)).flat().unique().length;
 
 console.time("day 19");
 var scanners = h.read(19,'scanners.txt').subfilter(l => !l.includes('scanner')).split(',').tonum();
 var distances: number[][][] = scanners.map(s => dists(s));
 var dcs : number[][][][] = distances.map(d1 => distances.map(d2 => distcomparison(d1,d2)));
-var matching = dcs.map((dc,i)=> matchingscanners(dc,i));
-var pointmatches = matching.map((l,i)=> l.map(m => [m,pointmatch(dcs[i][m])]));
+var matching: number[][] = dcs.map((dc,i)=> matchingscanners(dc,i));
+var pointmatches: [number, number[][]][][] = matching.map((l,i)=> l.map(m => [m,pointmatch(dcs[i][m])]));
+var uniquepoints : number = scanners.map(s => s.length).sum() - pointmatches.map((pm,i) => sharedwithearlier(pm,i)).sum();
+
+// showing some stuff
 var pm09 : [number, number[][]]= pointmatches[0][0];
 var pointpairs09 = pm09[1].map(pp => [scanners[0][pp[0]], scanners[pm09[0]][pp[1]]]);
 // h.print(scanners.map(s => s.length));
@@ -21,4 +25,5 @@ h.print(pointmatch(dcs[0][9]));
 h.print(matching);
 h.print(pointmatches.slice(0,1).map(l => JSON.stringify(l)));
 h.print(pointpairs09);
+h.print('part 1: unique points: ',uniquepoints);
 console.timeEnd("day 19");
