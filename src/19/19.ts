@@ -1,15 +1,16 @@
 import * as h from "../helpers";
+type Scanner= number[][];
 type PointMatch = [number[], number[][]];
 type Transform = [[string, number[]],number[]];
 
 var distance = (b1: number[], b2:number[]) : number => Math.sqrt(Math.pow(b1[0]-b2[0],2) + Math.pow(b1[1] -b2[1],2) + Math.pow(b1[2]-b2[2],2));
-var dists = (scanner:number[][]) : number[][] => scanner.map(s1 => scanner.map(s2 => distance(s1,s2)));
+var dists = (scanner: Scanner) : number[][] => scanner.map(s1 => scanner.map(s2 => distance(s1,s2)));
 var distcomparison = (dist1: number[][], dist2:number[][]) : number[][] => dist1.map(d1 => dist2.map(d2 => d2.shared(d1).length));
 var potentialcount = (comparison:number[][]) : number => comparison.map(d => d.max()).map(c => c>=10 ? 1 : 0).sum();
 var matchingscanners = (comparisons: number[][][], scannerIndex:number) : number[] => 
     comparisons.map(dc => potentialcount(dc)).map((c,i) => c>= 12 ? i : -1).filter(i => i >=0 && i !== scannerIndex);
 var pointmatch = (comparison: number[][]) : number[][] => comparison.map((c,i) => [i, c.findIndex(x => x>=12)]).filter(pp => pp[1]>=0);
-var pointpairs = (scanners:number[][][], pointmatches: PointMatch[], s1:number, s2:number): number[][][] => {
+var pointpairs = (scanners:Scanner[], pointmatches: PointMatch[], s1:number, s2:number): number[][][] => {
     let pointmatch : PointMatch = pointmatches[pointmatches.findIndex(pm => h.equals2(pm[0],[s1, s2]))]
     return pointmatch[1].map(pp => [scanners[s1][pp[0]], scanners[s2][pp[1]]]);
 }
@@ -38,7 +39,7 @@ var checkTransform = (b1:number[], b2:number[], transform:Transform) : boolean =
     // check if applying transform to b2 gives b1
     return h.equals2(b1, applyTransform(b2, transform));
 }
-var findTransform = (scanners: number[][][], pointmatches: PointMatch[], s1:number, s2:number) : Transform => {
+var findTransform = (scanners: Scanner[], pointmatches: PointMatch[], s1:number, s2:number) : Transform => {
     let pps = pointpairs(scanners,pointmatches,s1,s2);
     let tfs = getAllTransforms(pps[0][0],pps[0][1]);
     for(const pp of pps) { 
@@ -49,6 +50,17 @@ var findTransform = (scanners: number[][][], pointmatches: PointMatch[], s1:numb
     if (tfs.length === 0) h.print(' >> ERROR: found NO valid transform for scanner pair ',s1, ', ',s2, ' <<');
     return tfs[0];
 }
+var mergeScanners = ( transform:Transform, s1:Scanner, s2:Scanner) : Scanner => s1.concat(s2.map(p => applyTransform(p,transform))).unique();
+var getChildren = (transforms:[number[], Transform][], scanner:number) : [number[], Transform][] => transforms.filter(tf => tf[0][0] === scanner);
+var mergeWithAllChildren = (scanners: Scanner[], transforms: [number[], Transform][], scanner:number) : Scanner => {
+    let mergedScanner = scanners[scanner].map(s => s);
+    let children = getChildren(transforms, scanner);
+    for (const c of children) {
+        let child = mergeWithAllChildren(scanners, transforms, c[0][1]);
+        mergedScanner = mergeScanners(c[1],mergedScanner,child);
+    }
+    return mergedScanner;
+}
 
 console.time("day 19");
 var scanners = h.read(19,'scanners.txt').subfilter(l => !l.includes('scanner')).split(',').tonum();
@@ -56,29 +68,12 @@ var distances: number[][][] = scanners.map(s => dists(s));
 var dcs : number[][][][] = distances.map(d1 => distances.map(d2 => distcomparison(d1,d2)));
 var matching: number[][] = dcs.map((dc,i)=> matchingscanners(dc,i));
 var pointmatches: PointMatch[] = matching.map((l,i)=>  scannerMatches(i,l,dcs)).flat().filter(pm => pm[0][0] < pm[0][1]);
+var transforms: [number[], Transform][] = pointmatches.map(pm => [pm[0], findTransform(scanners, pointmatches,pm[0][0],pm[0][1])]);
 
 // part 1 try 2: do actual mapping of all points
-h.print(findTransform(scanners, pointmatches,0,9));
-// var pp09 = pointpairs(scanners,pointmatches,0,9);
-// var transforms09 = getAllTransforms(pp09[0][0],pp09[0][1]);
-// h.write(19,'transforms09.json',h.stringify(transforms09));
-// var tcheck = transforms09.map(t => checkTransform(pp09[1][0],pp09[1][1],t));
-// h.print(tcheck);
-
-// // h.print(rotations48.slice(0,3));
-// var rot: [string, number[]] = ['+--',[2,0,1]];
-// var tr = getTransform([1,2,3], [4,5,6],rot);
-// h.print(tr);
-// h.print(applyTransform([4,5,6],tr));
-
-// showing some stuff
-// h.print(dcs[0][9].printcolor(x => x>=12,'r',','));
-h.print(pointmatch(dcs[0][9]));
-//h.print(distances[0].map(d => d.map(x => Math.round(x)).sortnum()).print(','))
-h.print('')
-//h.print(distances[9].map(d => d.map(x => Math.round(x)).sortnum()).print(','))
-// h.print(matching);
-// h.print(pp09);
-// h.write(19,'pointmatches.json',h.stringify(pointmatches));
+let mergedScanner = mergeWithAllChildren(scanners, transforms,0);
+// h.print(findTransform(scanners, pointmatches,0,9));
+h.print('part 1: total number of points: ',mergedScanner.length);
+h.write(19,'mergedscanner.json',h.stringify(mergedScanner));
 
 console.timeEnd("day 19");
