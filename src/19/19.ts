@@ -10,9 +10,10 @@ var pointpairs = (scanners:number[][][], pointmatches: [number[], number[][]][],
     let pointmatch : [number[], number[][]] = pointmatches[pointmatches.findIndex(pm => h.equals2(pm[0],[s1, s2]))]
     return pointmatch[1].map(pp => [scanners[s1][pp[0]], scanners[s2][pp[1]]]);
 }
-var flips8: string[] = ['+++','++-','+-+','+--','-++','-+-','--+','--'];
+var flips8: string[] = ['+++','++-','+-+','+--','-++','-+-','--+','---'];
 var permutations6 : number[][] = [[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
-var rotations48 : [string, number[]][] = flips8.map(f => permutations6.map(p => [f, p])).flat();
+var rotationsPerFlip = (flip:string, permutations: number[][]) : [string, number[]][] => permutations.map(p => [flip, p]);
+var rotations48 : [string, number[]][] = flips8.map(f => rotationsPerFlip(f, permutations6)).flat();
 var applyRotation = (point:number[], rotation: [string, number[]]) : number[] => {
     let pnew : number[] = [];
     for (const i of point.range()) pnew.push((rotation[0][i] === '-' ?-1:1)*point[rotation[1][i]]);
@@ -37,26 +38,29 @@ var scanners = h.read(19,'scanners.txt').subfilter(l => !l.includes('scanner')).
 var distances: number[][][] = scanners.map(s => dists(s));
 var dcs : number[][][][] = distances.map(d1 => distances.map(d2 => distcomparison(d1,d2)));
 var matching: number[][] = dcs.map((dc,i)=> matchingscanners(dc,i));
-var pointmatches: [number[], number[][]][] = matching.map((l,i)=> l.map(m => [[i,m],pointmatch(dcs[i][m])])).flat().filter(pm => pm[0] < pm[1]);
+var scannerMatches = (scanner:number, matchingScanners:number[], distComparisons: number[][][][]) : [number[], number[][]][] => matchingScanners.map(m => [[scanner, m], pointmatch(distComparisons[scanner][m])]);
+var pointmatches: [number[], number[][]][] = matching.map((l,i)=>  scannerMatches(i,l,dcs)).flat().filter(pm => pm[0][0] < pm[0][1]);
 
 // part 1 try 2: do actual mapping of all points
 var pp09 = pointpairs(scanners,pointmatches,0,9);
 var transforms09 = getAllTransforms(pp09[0][0],pp09[0][1]);
 h.write(19,'transforms09.json',h.stringify(transforms09));
-var tcheck = transforms09.map(t => checkTransform(pp09[0][0],pp09[0][1],t));
+var tcheck = transforms09.map(t => checkTransform(pp09[1][0],pp09[1][1],t));
 h.print(tcheck);
 
 // h.print(rotations48.slice(0,3));
 var rot: [string, number[]] = ['+--',[2,0,1]];
 var tr = getTransform([1,2,3], [4,5,6],rot);
-h.print(tr);
-h.print(applyTransform([4,5,6],tr));
-// h.print()
+// h.print(tr);
+// h.print(applyTransform([4,5,6],tr));
 
 // showing some stuff
 // h.print(dcs[0][9].printcolor(x => x>=12,'r',','));
-// h.print(pointmatch(dcs[0][9]));
-h.print(matching);
+h.print(pointmatch(dcs[0][9]));
+//h.print(distances[0].map(d => d.map(x => Math.round(x)).sortnum()).print(','))
+h.print('')
+//h.print(distances[9].map(d => d.map(x => Math.round(x)).sortnum()).print(','))
+// h.print(matching);
 h.print(pp09);
 h.write(19,'pointmatches.json',h.stringify(pointmatches));
 
