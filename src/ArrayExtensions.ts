@@ -47,17 +47,17 @@ declare global {
         print(j1:string) : void;
         print(j1:string, j2:string) : void;
 
-        printcolor(matches: (x: any) => boolean, color:string) : void;
-        printcolor(matches: (x: any) => boolean, color:string,j1:string) : void;
-        printcolor(matches: (x: any) => boolean, color:string,j1:string, j2:string) : void;
+        printc(matches: (x: any) => boolean, color:string) : void;
+        printc(matches: (x: any) => boolean, color:string,j1:string) : void;
+        printc(matches: (x: any) => boolean, color:string,j1:string, j2:string) : void;
 
         string() : string;
         string(j1:string) : string;
         string(j1:string, j2:string) : string;
 
-        stringcolor(matches: (x: any) => boolean, color:string) : string;
-        stringcolor(matches: (x: any) => boolean, color:string,j1:string) : string;
-        stringcolor(matches: (x: any) => boolean, color:string,j1:string, j2:string) : string;
+        stringc(matches: (x: any) => boolean, color:string) : string;
+        stringc(matches: (x: any) => boolean, color:string,j1:string) : string;
+        stringc(matches: (x: any) => boolean, color:string,j1:string, j2:string) : string;
         subfilter(matches: (x: any) => boolean) : any[][];
     }
 }
@@ -87,25 +87,25 @@ if(!Array.prototype.string) {
     });
 }
 
-if(!Array.prototype.printcolor) {
-	// .stringcolor but then print the result
-	Object.defineProperty(Array.prototype, 'printcolor', {
+if(!Array.prototype.printc) {
+	// .stringc but then print the result
+	Object.defineProperty(Array.prototype, 'printc', {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function printcolor(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : void {
-            console.log(this.stringcolor(matches,color,j1,j2));
+	value: function printc(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : void {
+            console.log(this.stringc(matches,color,j1,j2));
         }
     });
 }
 
-if(!Array.prototype.stringcolor) {
+if(!Array.prototype.stringc) {
 	// convert to string but specify if a given element should be printed with a given color
-	Object.defineProperty(Array.prototype, 'stringcolor', {
+	Object.defineProperty(Array.prototype, 'stringc', {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function stringcolor(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : string {
+	value: function stringc(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : string {
             var startc = [white, green, red, yellow, cyan, blue, magenta];
             var colors = ['w','g','r','y','c', 'b','m'];
             var end = cOff;
