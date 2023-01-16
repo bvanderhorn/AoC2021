@@ -13,5 +13,5 @@ for (const f of folds) {
     h.print(' dots left: ',newDots.length);
 }
 var [yMax, xMax] = [newDots.col(0).max(), newDots.col(1).max()];
-var letters = h.ea([yMax+1, xMax+1]).mapij((i,j,_) => newDots.includes2([i,j]) ? '#' : '.').print();
+var letters = h.ea([yMax+1, xMax+1]).mapij((i,j,_) => newDots.includes2([i,j]) ? '#' : '.').string();
 h.print(letters);

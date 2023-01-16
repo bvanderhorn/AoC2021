@@ -15,12 +15,12 @@ var step = (octos:number[][]) : number[][] => {
     return newOctos.map(l => l.map((o:number) => o > 9 ? 0 : o));
 }
 var octopuses = h.read(11,'octopuses.txt').split('').tonum();
-var [t, flashes, newFlashes, newOctos, octolog] = [0, 0, 0, octopuses.copy(), ['original:\r\n' + octopuses.print()]];
+var [t, flashes, newFlashes, newOctos, octolog] = [0, 0, 0, octopuses.copy(), ['original:\r\n' + octopuses.string()]];
 while (true) {
     [t, newOctos] = [t+1, step(newOctos)];
     newFlashes = newOctos.flat().count(0);
     flashes += newFlashes;
-    octolog.push('\r\nstep ' + t +' (' + newFlashes +' flashes):\r\n'+ newOctos.print());
+    octolog.push('\r\nstep ' + t +' (' + newFlashes +' flashes):\r\n'+ newOctos.string());
     if (t==100) h.print('part 1: # flashes after 100 steps: ',flashes);
     if (newFlashes == newOctos.flat().length) break;
 }

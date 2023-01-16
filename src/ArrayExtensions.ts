@@ -43,36 +43,69 @@ declare global {
 	    dict(name:any): any;
         mapij(make:(i:number, j:number,x:any) => any) : any[][];
         mape(make: (x:any) => any) : any[];
-        print() : string;
-        print(j1:string) : string;
-        print(j1:string, j2:string) : string;
+        print() : void;
+        print(j1:string) : void;
+        print(j1:string, j2:string) : void;
 
-        printcolor(matches: (x: any) => boolean, color:string) : string;
-        printcolor(matches: (x: any) => boolean, color:string,j1:string) : string;
-        printcolor(matches: (x: any) => boolean, color:string,j1:string, j2:string) : string;
+        printcolor(matches: (x: any) => boolean, color:string) : void;
+        printcolor(matches: (x: any) => boolean, color:string,j1:string) : void;
+        printcolor(matches: (x: any) => boolean, color:string,j1:string, j2:string) : void;
+
+        string() : string;
+        string(j1:string) : string;
+        string(j1:string, j2:string) : string;
+
+        stringcolor(matches: (x: any) => boolean, color:string) : string;
+        stringcolor(matches: (x: any) => boolean, color:string,j1:string) : string;
+        stringcolor(matches: (x: any) => boolean, color:string,j1:string, j2:string) : string;
         subfilter(matches: (x: any) => boolean) : any[][];
     }
 }
 
 if(!Array.prototype.print) {
-	// combine all elements of a 2D string array to a single, printable string
+	// .string but then print the result
 	Object.defineProperty(Array.prototype, 'print', {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function print(this: any[][], j1:string = '',j2:string='\n') : string {
+	value: function print(this: any[][], j1:string = '',j2:string='\n') : void {
+            console.log(this.string(j1,j2));
+        }
+    });
+}
+
+
+if(!Array.prototype.string) {
+	// combine all elements of a 2D string array to a single, printable string
+	Object.defineProperty(Array.prototype, 'string', {
+	enumerable: false,
+	writable:false,
+	configurable: false,
+	value: function string(this: any[][], j1:string = '',j2:string='\n') : string {
             return this.map(l=> l.join(j1)).join(j2);
         }
     });
 }
 
 if(!Array.prototype.printcolor) {
-	// do a print but specify if a given element should be printed with a given color
+	// .stringcolor but then print the result
 	Object.defineProperty(Array.prototype, 'printcolor', {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function printcolor(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : string {
+	value: function printcolor(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : void {
+            console.log(this.stringcolor(matches,color,j1,j2));
+        }
+    });
+}
+
+if(!Array.prototype.stringcolor) {
+	// convert to string but specify if a given element should be printed with a given color
+	Object.defineProperty(Array.prototype, 'stringcolor', {
+	enumerable: false,
+	writable:false,
+	configurable: false,
+	value: function stringcolor(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : string {
             var startc = [white, green, red, yellow, cyan, blue, magenta];
             var colors = ['w','g','r','y','c', 'b','m'];
             var end = cOff;

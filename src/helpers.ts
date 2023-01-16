@@ -79,12 +79,14 @@ export function expandTrace(trace:number[][]) : number[][] {
     return expTrace;
 }
 
-export function getnb(pos:number[], dyi:number[]|number, dxi:number[]|number,options=''): number[][] {
+export function getnb(pos:number[], dyi:number[]|number = 0, dxi:number[]|number = 0,options=''): number[][] {
     // with Y being the primary (down) direction of the 2D map, and X being the secondary (right) one
     // dx, dy are in format [xMin, xMax] / [yMin, yMax]
     var dx = Array.isArray(dxi) ? dxi : [0,dxi];
     var dy = Array.isArray(dyi) ? dyi : [0,dyi];
-    var all = options.includes('8');
+    var n8 = options.includes('8');
+    var n9 = options.includes('9');
+    var noFilter = options.includes('nf');
     var filterDirs = options.includes('u') || options.includes('d') || options.includes('l') || options.includes('r');
     var dirs = 'udlr'.split('');
     if (filterDirs) dirs = dirs.filter(d => options.includes(d));
@@ -94,13 +96,16 @@ export function getnb(pos:number[], dyi:number[]|number, dxi:number[]|number,opt
     if (dirs.includes('d')) nb.push([pos[0]+1, pos[1]]);
     if (dirs.includes('l')) nb.push([pos[0]  , pos[1]-1]);
     if (dirs.includes('r')) nb.push([pos[0]  , pos[1]+1]);
-    if (all) nb.push(
+    if (n8 || n9) nb.push(
         [pos[0]-1, pos[1]-1],
         [pos[0]-1, pos[1]+1],
         [pos[0]+1, pos[1]-1],
         [pos[0]+1, pos[1]+1]
     );
-    return nb.filter(n => n != undefined).filter(n => n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]);
+    if (n9) nb.push(pos);
+    if (!noFilter) nb = nb.filter(n => n[0] >= dy[0] && n[0]<=dy[1] && n[1]>=dx[0] && n[1]<=dx[1]);
+
+    return nb;
 }
 
 export function ea(len:number|number[],fill:any = undefined) : any[] {
