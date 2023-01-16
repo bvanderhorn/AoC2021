@@ -26,6 +26,7 @@ declare global {
         times(t: number) : any[];
         plus(p:number) : any[];
         mod(m:number) : any[];
+        abs() : any[];
         count(element:any): number;
         includesAll(array: any[]) : boolean;
         includes2(array: any[]) : boolean;
@@ -291,6 +292,18 @@ if (!Array.prototype.mod) {
         configurable: false, 
         value: function mod(this: any[], m:number): any[] {
             return this.map(el => Array.isArray(el) ? el.mod(m) : el % m);
+        }
+    });
+}
+
+if (!Array.prototype.abs) {
+    // calculate the absolute of each element (recursively)
+    Object.defineProperty(Array.prototype, 'abs', {
+        enumerable: false, 
+        writable: false, 
+        configurable: false, 
+        value: function abs(this: any[]): any[] {
+            return this.map(el => Array.isArray(el) ? el.abs() : Math.abs(el));
         }
     });
 }

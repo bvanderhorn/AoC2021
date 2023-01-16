@@ -80,4 +80,7 @@ let mergedScanner = mergeWithAllChildren(scanners, transforms,0);
 h.print('part 1: total number of points: ',mergedScanner.length);
 h.write(19,'mergedscanner.json',h.stringify(mergedScanner));
 
+// part 2: largest distance between any two scanners
+var maxDist : number = transforms.map(t => t[1][1].abs().sum()).max();
+h.print('part 2: max Manhattan distance between any two scanners: ',maxDist);
 console.timeEnd("day 19");
