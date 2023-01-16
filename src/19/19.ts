@@ -52,11 +52,16 @@ var findTransform = (scanners: Scanner[], pointmatches: PointMatch[], s1:number,
 }
 var mergeScanners = ( transform:Transform, s1:Scanner, s2:Scanner) : Scanner => s1.concat(s2.map(p => applyTransform(p,transform))).unique();
 var getChildren = (transforms:[number[], Transform][], scanner:number) : [number[], Transform][] => transforms.filter(tf => tf[0][0] === scanner);
+
+var alreadyMerged : number[] = [0];
 var mergeWithAllChildren = (scanners: Scanner[], transforms: [number[], Transform][], scanner:number) : Scanner => {
     let mergedScanner = scanners[scanner].map(s => s);
     let children = getChildren(transforms, scanner);
     for (const c of children) {
+        if (alreadyMerged.includes(c[0][1])) continue;
+        alreadyMerged.push(c[0][1]);
         let child = mergeWithAllChildren(scanners, transforms, c[0][1]);
+        h.print(' merging ',c[0][1],' into ',c[0][0]);
         mergedScanner = mergeScanners(c[1],mergedScanner,child);
     }
     return mergedScanner;
@@ -67,12 +72,11 @@ var scanners = h.read(19,'scanners.txt').subfilter(l => !l.includes('scanner')).
 var distances: number[][][] = scanners.map(s => dists(s));
 var dcs : number[][][][] = distances.map(d1 => distances.map(d2 => distcomparison(d1,d2)));
 var matching: number[][] = dcs.map((dc,i)=> matchingscanners(dc,i));
-var pointmatches: PointMatch[] = matching.map((l,i)=>  scannerMatches(i,l,dcs)).flat().filter(pm => pm[0][0] < pm[0][1]);
+var pointmatches: PointMatch[] = matching.map((l,i)=>  scannerMatches(i,l,dcs)).flat();
 var transforms: [number[], Transform][] = pointmatches.map(pm => [pm[0], findTransform(scanners, pointmatches,pm[0][0],pm[0][1])]);
 
-// part 1 try 2: do actual mapping of all points
+// part 1: do actual mapping of all points
 let mergedScanner = mergeWithAllChildren(scanners, transforms,0);
-// h.print(findTransform(scanners, pointmatches,0,9));
 h.print('part 1: total number of points: ',mergedScanner.length);
 h.write(19,'mergedscanner.json',h.stringify(mergedScanner));
 
