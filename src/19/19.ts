@@ -4,6 +4,7 @@ type PointMatch = [number[], number[][]];
 type Transform = [[string, number[]],number[]];
 
 var distance = (b1: number[], b2:number[]) : number => Math.sqrt(Math.pow(b1[0]-b2[0],2) + Math.pow(b1[1] -b2[1],2) + Math.pow(b1[2]-b2[2],2));
+var manhattanDistance =  (b1: number[], b2:number[]) : number => b1.map((b,i) => b-b2[i]).abs().sum();
 var dists = (scanner: Scanner) : number[][] => scanner.map(s1 => scanner.map(s2 => distance(s1,s2)));
 var distcomparison = (dist1: number[][], dist2:number[][]) : number[][] => dist1.map(d1 => dist2.map(d2 => d2.shared(d1).length));
 var potentialcount = (comparison:number[][]) : number => comparison.map(d => d.max()).map(c => c>=10 ? 1 : 0).sum();
@@ -54,17 +55,19 @@ var mergeScanners = ( transform:Transform, s1:Scanner, s2:Scanner) : Scanner => 
 var getChildren = (transforms:[number[], Transform][], scanner:number) : [number[], Transform][] => transforms.filter(tf => tf[0][0] === scanner);
 
 var alreadyMerged : number[] = [0];
-var mergeWithAllChildren = (scanners: Scanner[], transforms: [number[], Transform][], scanner:number) : Scanner => {
+var mergeWithAllChildren = (scanners: Scanner[], transforms: [number[], Transform][], scanner:number) : [Scanner,number[][]] => {
     let mergedScanner = scanners[scanner].map(s => s);
     let children = getChildren(transforms, scanner);
+    let scannerLocations: number[][] = [[0,0,0]];
     for (const c of children) {
         if (alreadyMerged.includes(c[0][1])) continue;
         alreadyMerged.push(c[0][1]);
-        let child = mergeWithAllChildren(scanners, transforms, c[0][1]);
+        let [child, addedScannerLocations] = mergeWithAllChildren(scanners, transforms, c[0][1]);
         h.print(' merging ',c[0][1],' into ',c[0][0]);
         mergedScanner = mergeScanners(c[1],mergedScanner,child);
+        scannerLocations = scannerLocations.concat(addedScannerLocations.map(sl => applyTransform(sl,c[1])));
     }
-    return mergedScanner;
+    return [mergedScanner, scannerLocations];
 }
 
 console.time("day 19");
@@ -76,11 +79,12 @@ var pointmatches: PointMatch[] = matching.map((l,i)=>  scannerMatches(i,l,dcs)).
 var transforms: [number[], Transform][] = pointmatches.map(pm => [pm[0], findTransform(scanners, pointmatches,pm[0][0],pm[0][1])]);
 
 // part 1: do actual mapping of all points
-let mergedScanner = mergeWithAllChildren(scanners, transforms,0);
+let [mergedScanner, scannerLocations] = mergeWithAllChildren(scanners, transforms,0);
 h.print('part 1: total number of points: ',mergedScanner.length);
 h.write(19,'mergedscanner.json',h.stringify(mergedScanner));
 
 // part 2: largest distance between any two scanners
-var maxDist : number = transforms.map(t => t[1][1].abs().sum()).max();
+h.print(scannerLocations);
+let maxDist = scannerLocations.map(sl1 => scannerLocations.map(sl2 => manhattanDistance(sl1, sl2))).flat(2).max();
 h.print('part 2: max Manhattan distance between any two scanners: ',maxDist);
 console.timeEnd("day 19");
