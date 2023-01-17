@@ -15,8 +15,7 @@ var enhance = (floor:number[][], alg:number[],index:number) : number[][] => {
         let bin:string = nb.map((n:number[]) => (n.min() < 0 || n[0] >= dims[0] || n[1] >= dims[1]) ? x: out[n[0]][n[1]]).join('');
         return alg[parseInt(bin,2)];
     });
-    out.mape(x=>x==1?'#':'.').printc(x=>x=='#','r');
-    h.print('');
+    //out.mape(x=>x==1?'#':'.').printc(x=>x=='#','r');
     return out;
 }
 var enhanceTimes = (floor:number[][], alg:number[], times:number): number[][] => {
@@ -24,10 +23,11 @@ var enhanceTimes = (floor:number[][], alg:number[], times:number): number[][] =>
     for(let i=0;i<times;i++) out = enhance(out,alg,i);
     return out;
 }
-
+console.time("day 19");
 let [alg, floor] = h.read(20,'floor.txt').split('');
 alg = alg[0].map((a:string) => a==='#' ?1:0);
 floor = floor.mape((x:string) => x==='#' ?1:0);
-floor.mape(x=>x==1 ? '#':'.').printc(x=>x=='#','c');
-h.print('');
+//floor.mape(x=>x==1 ? '#':'.').printc(x=>x=='#','c');
 h.print('part 1: number of lit pixels after 2 enhancements: ',enhanceTimes(floor,alg,2).sum1().sum());
+h.print('part 2: number of lit pixels after 50 enhancements: ',enhanceTimes(floor,alg,50).sum1().sum());
+console.timeEnd("day 19");
