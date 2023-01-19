@@ -47,6 +47,7 @@ declare global {
         print(j1:string) : void;
         print(j1:string, j2:string) : void;
 
+        printc(matches: (x: any) => boolean) : void;
         printc(matches: (x: any) => boolean, color:string) : void;
         printc(matches: (x: any) => boolean, color:string,j1:string) : void;
         printc(matches: (x: any) => boolean, color:string,j1:string, j2:string) : void;
@@ -93,7 +94,7 @@ if(!Array.prototype.printc) {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function printc(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : void {
+	value: function printc(this: any[][], matches:(x:any) => boolean, color:string = 'r', j1:string = '',j2:string='\n') : void {
             console.log(this.stringc(matches,color,j1,j2));
         }
     });
