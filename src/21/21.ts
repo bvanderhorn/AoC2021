@@ -34,8 +34,18 @@ var getPaths = (start:number) : number[][] => {
   pathsTo21([start],paths,index);
   return paths.slice(0,index[0]);
 }
+var dCount = [0,0,0,1,3,6,7,6,3,1,0];
+var deltas = (path:number[]) : number[] => path.slice(1).map((p,i) => mod(p+10-path[i]));
+var pathCount = (path:number[]) : number => deltas(path).map(d => dCount[d]).prod();
+var turnsCount = (paths:number[][], turns:number) : number => paths.filter(p=>p.length === turns+1).map(p=> pathCount(p)).sum();
+var turnsCountArray = (paths:number[][], maxTurns:number) : number[] => h.range(0,maxTurns+1).map(t=>turnsCount(paths,t));
 let [pathsA, pathsB] = start.map(s => getPaths(s));
+let maxTurns = pathsA.map(p => p.length).concat(pathsB.map(p=>p.length)).max()-1;
+let [tcA,tcB] = [pathsA,pathsB].map(p => turnsCountArray(p,maxTurns));
 
 h.print('nof paths for ',start[0],': ',pathsA.length);
 h.print('nof paths for ',start[1],': ',pathsB.length);
-pathsA.slice(0,30).print(',');
+h.print('max Turns: ',maxTurns);
+h.print('turns count A: ',tcA);
+h.print('turns count B: ',tcB);
+pathsA.sort((a,b) => b.length - a.length).slice(0,30).print(',');

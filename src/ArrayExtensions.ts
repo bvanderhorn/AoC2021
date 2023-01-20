@@ -43,6 +43,8 @@ declare global {
 	    dict(name:any): any;
         mapij(make:(i:number, j:number,x:any) => any) : any[][];
         mape(make: (x:any) => any) : any[];
+        subfilter(matches: (x: any) => boolean) : any[][];
+
         print() : void;
         print(j1:string) : void;
         print(j1:string, j2:string) : void;
@@ -59,7 +61,6 @@ declare global {
         stringc(matches: (x: any) => boolean, color:string) : string;
         stringc(matches: (x: any) => boolean, color:string,j1:string) : string;
         stringc(matches: (x: any) => boolean, color:string,j1:string, j2:string) : string;
-        subfilter(matches: (x: any) => boolean) : any[][];
     }
 }
 
