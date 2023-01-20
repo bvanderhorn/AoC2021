@@ -42,10 +42,15 @@ var turnsCountArray = (paths:number[][], maxTurns:number) : number[] => h.range(
 let [pathsA, pathsB] = start.map(s => getPaths(s));
 let maxTurns = pathsA.map(p => p.length).concat(pathsB.map(p=>p.length)).max()-1;
 let [tcA,tcB] = [pathsA,pathsB].map(p => turnsCountArray(p,maxTurns));
+let Awins = tcA.map((tc,i) => tcB.slice(0,i+1).sum()*tc).sum();
+let Bwins = tcB.map((tc,i) => tcA.slice(0,i).sum()*tc).sum();
+
 
 h.print('nof paths for ',start[0],': ',pathsA.length);
 h.print('nof paths for ',start[1],': ',pathsB.length);
 h.print('max Turns: ',maxTurns);
 h.print('turns count A: ',tcA);
 h.print('turns count B: ',tcB);
-pathsA.sort((a,b) => b.length - a.length).slice(0,30).print(',');
+h.print('player A wins in: ',Awins);
+h.print('player B wins in: ',Bwins);
+// pathsA.sort((a,b) => b.length - a.length).slice(0,30).print(',');
