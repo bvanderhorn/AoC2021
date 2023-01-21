@@ -69,7 +69,6 @@ let [tcA,tcB] = [pathsA,pathsB].map(p => turnsCountArray(p,maxTurns));
 let [ncA, ncB] = start.map(s => countNot21PerTurn(s,maxTurns));
 let Awins = tcA.slice(1).map((tc,i) => ncB[i]*tc).sum();
 let Bwins = tcB.slice(1).map((tc,i) => ncA[i+1]*tc).sum();
-h.print(getPathsNot21(5,2));
 
 h.print('nof paths to 21 for ',start[0],': ',pathsA.length);
 h.print('nof paths to 21 for ',start[1],': ',pathsB.length);
