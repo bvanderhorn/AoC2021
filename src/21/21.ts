@@ -56,8 +56,6 @@ var getPathsNot21 = (start:number, turn:number) : number[][] => {
   pathsNotTo21([start],paths,index,turn);
   return paths.slice(0,index[0]);
 }
-// var uniquePathsUpToTurnNot21 = (paths:number[][],turn:number):number[][] => paths.filter(p=>p.length > turn+1).map(p=>p.slice(0,turn+2)).unique();
-// var uptCount = (paths:number[][],maxTurns:number) : number[] => h.range(0,maxTurns+1).map(t => uniquePathsUpToTurnNot21(paths,t).length);
 var pathsNot21PerTurn = (start:number,maxTurns:number) : number[][][] => h.range(0,maxTurns+1).map(t => getPathsNot21(start,t));
 var countNot21PerTurn = (start:number, maxTurns:number) : number[] => pathsNot21PerTurn(start, maxTurns).map(t => t.map(p => pathCount(p)).sum());
 var dCount = [0,0,0,1,3,6,7,6,3,1,0];
@@ -68,22 +66,17 @@ var turnsCountArray = (paths:number[][], maxTurns:number) : number[] => h.range(
 let [pathsA, pathsB] = start.map(s => getPaths21(s));
 let maxTurns = pathsA.map(p => p.length).concat(pathsB.map(p=>p.length)).max()-1;
 let [tcA,tcB] = [pathsA,pathsB].map(p => turnsCountArray(p,maxTurns));
-let [uptA, uptB] = start.map(s => pathsNot21PerTurn(s,maxTurns).map(p=>p.length));
 let [ncA, ncB] = start.map(s => countNot21PerTurn(s,maxTurns));
-// let Awins = tcA.map((tc,i) => tcB.slice(0,i).sum()*tc).sum();
-// let Bwins = tcB.map((tc,i) => tcA.slice(0,i).sum()*tc).sum();
-
-// h.print(deltas([5,1,4,1,4,2,1,4,2,1,4]));
-// h.print(pathCount([5,1,4,1,4,2,1,4,2,1,4]));
+let Awins = tcA.slice(1).map((tc,i) => ncB[i]*tc).sum();
+let Bwins = tcB.slice(1).map((tc,i) => ncA[i+1]*tc).sum();
 h.print(getPathsNot21(5,2));
 
-h.print('nof paths for ',start[0],': ',pathsA.length);
-h.print('nof paths for ',start[1],': ',pathsB.length);
+h.print('nof paths to 21 for ',start[0],': ',pathsA.length);
+h.print('nof paths to 21 for ',start[1],': ',pathsB.length);
 h.print('max Turns: ',maxTurns);
 h.print('unique variants to 21 in turns for A: ',tcA);
 h.print('unique variants to 21 in turns for B: ',tcB);
 h.print('unique variants not 21 up to turns for A: ',ncA);
 h.print('unique variants not 21 up to turns for B: ',ncB);
-// h.print('player A wins in: ',Awins);
-// h.print('player B wins in: ',Bwins);
-// pathsA.sort((a,b) => b.length - a.length).slice(0,30).print(',');
+h.print('player A wins in: ',Awins);
+h.print('player B wins in: ',Bwins);
