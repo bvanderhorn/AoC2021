@@ -32,6 +32,8 @@ var excludedCuboids = (cuboidCheck: number[][], cuboidFixed:number[][]) : number
 var input = h.read(22,'cubes.txt').split(',').split('..').mape(x => x.replace(/[\s\S]*=/,'')).tonum();
 h.print(input.slice(0,3));
 
-let c1 = [[0,2],[0,2],[0,2]];
-let c2 = [[1,1],[1,1],[1,1]];
+var c1 = [[0,2],[0,2],[0,2]];
+var c2 = [[1,1],[1,1],[1,1]];
 h.print(excludedCuboids(c1,c2));
+
+
