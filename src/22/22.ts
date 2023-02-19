@@ -1,14 +1,14 @@
 import * as h from '../helpers';
 var overlap = (cuboid1:number[][], cuboid2:number[][]) : boolean => !cuboid1.map((r,i) => h.overlaps(r,cuboid2[i])).includes(false);
-var excludedCuboids = (cuboidCheck: number[][], cuboidFixed:number[][]) : number[][][] => {
-    if (!overlap(cuboidCheck, cuboidFixed)) return [cuboidCheck];
+var leftDiff = (cuboidLeft: number[][], cuboidRight:number[][]) : number[][][] => {
+    if (!overlap(cuboidLeft, cuboidRight)) return [cuboidLeft];
     
-    // if cuboids overlap, return the sub-cuboids from cuboidCheck that are not in cuboidFixed
+    // if cuboids overlap, return the sub-cuboids from cuboidLeft that are not in cuboidRight
     let newRanges : number[][][] = [];
-    var crange = cuboidCheck.copy();
-    for (let i=0; i<cuboidCheck.length; i++) {
-        let r = cuboidCheck[i];
-        let f = cuboidFixed[i];
+    var crange = cuboidLeft.copy();
+    for (let i=0; i<cuboidLeft.length; i++) {
+        let r = cuboidLeft[i];
+        let f = cuboidRight[i];
         if (f[0] <= r[0] && f[1] >= r[1]) continue;
         if (f[0] > r[0]) {
             let c = crange.copy();
@@ -26,7 +26,17 @@ var excludedCuboids = (cuboidCheck: number[][], cuboidFixed:number[][]) : number
 
     return newRanges;
 }
-
+var notInSet = (cuboid:number[][], cuboids:number[][][]) : number[][][] => {
+    let out = [cuboid];
+    for (let c of cuboids) {
+        let newOut = [];
+        for (let o of out) {
+            newOut.push(...leftDiff(o,c));
+        }
+        out = newOut;
+    }
+    return out;
+}
 var intersection = (cuboid1:number[][], cuboid2:number[][]) : number[][] => {
     if (!overlap(cuboid1, cuboid2)) return [];
     let out = cuboid1.copy();
@@ -38,15 +48,21 @@ var intersection = (cuboid1:number[][], cuboid2:number[][]) : number[][] => {
     return out;
 }
 
-
-var input = h.read(22,'cubes.txt');
+var input = h.read(22,'cubes.txt','ex');
 var cuboids: number[][][] = input.split(',').split('..').mape(x => x.replace(/[\s\S]*=/,'')).tonum();
 var onOff: boolean[]  = input.map(x => x.startsWith('on'));
-h.print(cuboids.slice(0,3));
-h.print(onOff.slice(0,3));
+var extCuboids: [boolean, number[][]][] = cuboids.map((c,i) => [onOff[i],c]);
+extCuboids = extCuboids.reverse();
+h.print(extCuboids.map(x => JSON.stringify(x)));
 
-var c1 = [[0,2],[0,2],[0,2]];
-var c2 = [[1,1],[1,1],[1,1]];
-h.print(excludedCuboids(c1,c2));
+// var c1 = [[0,2],[0,2],[0,2]];
+// var c2 = [[1,1],[1,1],[1,1]];
+// h.print(leftDiff(c1,c2));
+
+// part 1
+// get intersection of cuboids with region-of-interest
+var roi = [[-50,50],[-50,50],[-50,50]];
+var cuboidsInRoi: [boolean, number[][]][] = extCuboids.filter(c => overlap(c[1],roi)).map(c => [c[0], intersection(c[1],roi)]);
+h.print(cuboidsInRoi.map(x => JSON.stringify(x)));
 
 
