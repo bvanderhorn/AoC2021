@@ -49,6 +49,18 @@ var intersection = (cuboid1:number[][], cuboid2:number[][]) : number[][] => {
 }
 var countCoords = (cuboid:number[][]) : number => cuboid.map(r => r[1]-r[0]+1).prod();
 var countCoordsInSet = (cuboids:number[][][]) : number => cuboids.map(c => countCoords(c)).sum();
+var trueCoords = (cuboids: [boolean, number[][]][]) : number => {
+    let trueCuboids: number[][][] = [];
+    for (let i=0; i<cuboids.length; i++) {
+        let c = cuboids[i];
+        
+        if (c[0]) {
+            let newCuboids = notInSet(c[1],cuboids.slice(0,i).map(x => x[1]));
+            trueCuboids.push(...newCuboids);
+        }
+    }
+    return countCoordsInSet(trueCuboids);
+}
 
 var input = h.read(22,'cubes.txt');
 var cuboids: number[][][] = input.split(',').split('..').mape(x => x.replace(/[\s\S]*=/,'')).tonum();
@@ -61,16 +73,7 @@ h.print(extCuboids.map(x => JSON.stringify(x)));
 // get intersection of cuboids with region-of-interest
 var roi = [[-50,50],[-50,50],[-50,50]];
 var cuboidsInRoi: [boolean, number[][]][] = extCuboids.filter(c => overlap(c[1],roi)).map(c => [c[0], intersection(c[1],roi)]);
-h.print(cuboidsInRoi.map(x => JSON.stringify(x)));
+h.print(trueCoords(cuboidsInRoi));
 
-// get sets of true and false cuboids within region-of-interest
-var trueCuboids: number[][][] = [];
-var falseCuboids: number[][][] = [];
-for (let i=0; i<cuboidsInRoi.length; i++) {
-    let c = cuboidsInRoi[i];
-    let newCuboids = notInSet(c[1],cuboidsInRoi.slice(0,i).map(x => x[1]));
-    if (c[0]) trueCuboids.push(...newCuboids);
-    else falseCuboids.push(...newCuboids);
-}
-
-h.print(countCoordsInSet(trueCuboids));
+// part 2
+h.print(trueCoords(extCuboids));
