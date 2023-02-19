@@ -1,11 +1,9 @@
 import * as h from '../helpers';
-var inRange = (x:number, range:number[]) : boolean => x>= range[0] && x<=range[1];
+var overlap = (cuboid1:number[][], cuboid2:number[][]) : boolean => !cuboid1.map((r,i) => h.overlaps(r,cuboid2[i])).includes(false);
 var excludedCuboids = (cuboidCheck: number[][], cuboidFixed:number[][]) : number[][][] => {
-    // if any of the ranges don't overlap, return the original cuboid
-    let ol = cuboidCheck.map((r,i) => h.overlaps(r,cuboidFixed[i]));
-    if (ol.includes(false)) return [cuboidCheck];
+    if (!overlap(cuboidCheck, cuboidFixed)) return [cuboidCheck];
     
-    // if all ranges overlap, return the excluding cuboids
+    // if cuboids overlap, return the sub-cuboids from cuboidCheck that are not in cuboidFixed
     let newRanges : number[][][] = [];
     var crange = cuboidCheck.copy();
     for (let i=0; i<cuboidCheck.length; i++) {
@@ -29,8 +27,23 @@ var excludedCuboids = (cuboidCheck: number[][], cuboidFixed:number[][]) : number
     return newRanges;
 }
 
-var input = h.read(22,'cubes.txt').split(',').split('..').mape(x => x.replace(/[\s\S]*=/,'')).tonum();
-h.print(input.slice(0,3));
+var intersection = (cuboid1:number[][], cuboid2:number[][]) : number[][] => {
+    if (!overlap(cuboid1, cuboid2)) return [];
+    let out = cuboid1.copy();
+    for (let i=0; i<cuboid1.length; i++) {
+        let r = cuboid1[i];
+        let f = cuboid2[i];
+        out[i] = [Math.max(r[0],f[0]), Math.min(r[1],f[1])];
+    }
+    return out;
+}
+
+
+var input = h.read(22,'cubes.txt');
+var cuboids: number[][][] = input.split(',').split('..').mape(x => x.replace(/[\s\S]*=/,'')).tonum();
+var onOff: boolean[]  = input.map(x => x.startsWith('on'));
+h.print(cuboids.slice(0,3));
+h.print(onOff.slice(0,3));
 
 var c1 = [[0,2],[0,2],[0,2]];
 var c2 = [[1,1],[1,1],[1,1]];
