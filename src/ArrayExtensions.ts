@@ -44,6 +44,7 @@ declare global {
         mapij(make:(i:number, j:number,x:any) => any) : any[][];
         mape(make: (x:any) => any) : any[];
         subfilter(matches: (x: any) => boolean) : any[][];
+        transpose() : any[][];
 
         print() : void;
         print(j1:string) : void;
@@ -113,6 +114,18 @@ if(!Array.prototype.stringc) {
             var end = cOff;
             var start:string = startc[colors.indexOf(color)];
             return this.map(l=> l.map(x => matches(x) ? `${start}${x}${end}`: `${x}`).join(j1)).join(j2);
+        }
+    });
+}
+
+if (!Array.prototype.transpose) {
+    // transpose a 2D array
+    Object.defineProperty(Array.prototype, 'transpose', {
+    enumerable: false,
+    writable:false,
+    configurable: false,
+    value: function transpose(this: any[][]) : any[][] {
+            return this[0].map((_, c) => this.map(r => r[c]));
         }
     });
 }
