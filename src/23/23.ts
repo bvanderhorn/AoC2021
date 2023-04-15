@@ -7,12 +7,19 @@ var depth = input[0].length;
 
 var alley : number[] = h.ea(11);
 
+type state = {
+    burrows: number[][],
+    alley: number[]
+}
+
 h.print(alley);
 
-// full search
+// helpers
 var getEntryPoint = (i: number) : number => 2 + 2*i;
-var isEmptyOrContainsOnly = (i: number, j: number) : boolean => input[i].every((x: number) => x == j);
-var canSet = (pod: number) : boolean => isEmptyOrContainsOnly(pod, pod);
+var isEmptyOrContainsOnly = (i: number, j: number, burrows: number[][]) : boolean => burrows[i].every((x: number) => x == j);
+var canSet = (pod: number, burrows: number[][]) : boolean => isEmptyOrContainsOnly(pod, pod, burrows);
+var stepsOut = (lengthBefore:number) : number => depth - lengthBefore + 1;
+var stepsIn = (lengthBefore: number) : number => depth - lengthBefore;
 var isReachable = (alley: number[], entryPoint: number, rest: number) : boolean => {
     var subAlley = alley.slice(Math.min(entryPoint, rest), Math.max(entryPoint, rest) + 1);
     return subAlley.every(x => x == undefined || x == null);
@@ -37,4 +44,7 @@ h.print(stepsTaken);
 h.print(multiplier);
 h.print(multiplier.slice(1,3));
 
-
+// full search
+var getPointsFromState(state: state) : number => {
+    
+}
