@@ -20,8 +20,8 @@ var isEmptyOrContainsOnly = (i: number, j: number, burrows: number[][]) : boolea
 var canSet = (pod: number, burrows: number[][]) : boolean => isEmptyOrContainsOnly(pod, pod, burrows);
 var stepsOut = (lengthBefore:number) : number => depth - lengthBefore + 1;
 var stepsIn = (lengthBefore: number) : number => depth - lengthBefore;
-var isReachable = (alley: number[], entryPoint: number, rest: number) : boolean => {
-    var subAlley = alley.slice(Math.min(entryPoint, rest), Math.max(entryPoint, rest) + 1);
+var isReachable = (alley: number[], from: number, to: number) : boolean => {
+    var subAlley = alley.slice(Math.min(from, to) + 1, Math.max(from, to) + 1);
     return subAlley.every(x => x == undefined || x == null);
 }
 var restOptions = (entryPoint:number, alley: number[], rests: number[]) : number[] => {
@@ -45,6 +45,11 @@ h.print(multiplier);
 h.print(multiplier.slice(1,3));
 
 // full search
+var getMoveOptions = (state: state) : state[] => {
+    var options : state[] = [];
+    
+    return options;
+}
 var getPointsFromState(state: state) : number => {
     
 }
