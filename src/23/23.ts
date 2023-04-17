@@ -65,6 +65,15 @@ var getDirectMove = (state: state) : state | undefined => {
     return undefined;
 }
 
+var printState = (state: state) : void => {
+    var str = "\n" + "#".repeat(alley.length + 2) + '\n';
+    str +=  `#${state.alley.map(x => x == -1 ? '.' : types[x]).join('')}#\n`;
+    str += `###${state.burrows.map(b => b.length > 1 ? types[b[1]] : '.').join('#')}###\n`;
+    str += `  #${state.burrows.map(b => b.length > 0 ? types[b[0]] : '.').join('#')}#\n`;
+    str += '  ' + '#'.repeat(alley.length-2) + '\n';
+    console.log(str);
+}
+
 var getNextStates = (state: state) : state[] => {
     // return direct move if exists
     var directMove = getDirectMove(state);
@@ -134,24 +143,33 @@ var startState : state = {
 var statesToCheck: state[] = [startState];
 var lowestEndPoints = 1E8;
 var loopCounter = 0;
-while (statesToCheck.length > 0) {
-    if (loopCounter % 50 == 0) h.print(`loop ${loopCounter}: ${statesToCheck.length} states to check`);
-    var currentState = statesToCheck.shift();
-    var nextStates = getNextStates(currentState!);
-    while (nextStates.length > 0) {
-        var nextState = nextStates.pop();
-        if (stateIsFinal(nextState!)) {
-            if (nextState!.points < lowestEndPoints) {
-                lowestEndPoints = nextState!.points;
-                h.print(`new lowest state on loop ${loopCounter}: ${nextState!.points}`);
-            }
-            lowestEndPoints = Math.min(lowestEndPoints, nextState!.points);
-            continue;
-        }
-        statesToCheck.push(nextState!);
-    }
-    statesToCheck = statesToCheck.filter(s => s.points < lowestEndPoints);
-    statesToCheck = removeDuplicates(statesToCheck);
-    sortStates(statesToCheck);
-    loopCounter++;
+
+var testState = startState;
+printState(testState);
+var statesAfterStart = getNextStates(testState);
+h.print(`${statesAfterStart.length} states after 1st move:`)
+for (const state of statesAfterStart) {
+    printState(state);
 }
+
+// while (statesToCheck.length > 0) {
+//     if (loopCounter % 50 == 0) h.print(`loop ${loopCounter}: ${statesToCheck.length} states to check`);
+//     var currentState = statesToCheck.shift();
+//     var nextStates = getNextStates(currentState!);
+//     while (nextStates.length > 0) {
+//         var nextState = nextStates.pop();
+//         if (stateIsFinal(nextState!)) {
+//             if (nextState!.points < lowestEndPoints) {
+//                 lowestEndPoints = nextState!.points;
+//                 h.print(`new lowest state on loop ${loopCounter}: ${nextState!.points}`);
+//             }
+//             lowestEndPoints = Math.min(lowestEndPoints, nextState!.points);
+//             continue;
+//         }
+//         statesToCheck.push(nextState!);
+//     }
+//     statesToCheck = statesToCheck.filter(s => s.points < lowestEndPoints);
+//     statesToCheck = removeDuplicates(statesToCheck);
+//     sortStates(statesToCheck);
+//     loopCounter++;
+// }
