@@ -38,7 +38,7 @@ var getDirectMove = (state: state) : state | undefined => {
             var newState = copyState(state);
             newState.alley[i] = -1;
             newState.burrows[pod].push(pod);
-            newState.points += addPoints;
+            newState.points += addPoints*multiplier[pod];
             return newState;
         }
     }
@@ -57,7 +57,7 @@ var getDirectMove = (state: state) : state | undefined => {
             var newState2 = copyState(state);
             newState2.burrows[i].pop();
             newState2.burrows[pod].push(pod);
-            newState2.points += addPoints;
+            newState2.points += addPoints*multiplier[pod];
             return newState2;
         }
     }
@@ -65,13 +65,17 @@ var getDirectMove = (state: state) : state | undefined => {
     return undefined;
 }
 
-var printState = (state: state) : void => {
-    var str = "\n" + "#".repeat(alley.length + 2) + '\n';
+var printState = (state: state, suppressPrint:boolean = false) : string[] => {
+    var pointString = "p: " + state.points.toString();
+    var str = "\n" + pointString + " ".repeat(alley.length + 2 - pointString.length) + "\n";
+    str +=  "#".repeat(alley.length + 2) + '\n';
     str +=  `#${state.alley.map(x => x == -1 ? '.' : types[x]).join('')}#\n`;
     str += `###${state.burrows.map(b => b.length > 1 ? types[b[1]] : '.').join('#')}###\n`;
-    str += `  #${state.burrows.map(b => b.length > 0 ? types[b[0]] : '.').join('#')}#\n`;
-    str += '  ' + '#'.repeat(alley.length-2) + '\n';
-    console.log(str);
+    str += `  #${state.burrows.map(b => b.length > 0 ? types[b[0]] : '.').join('#')}#  \n`;
+    str += '  ' + '#'.repeat(alley.length-2) + '  \n';
+    
+    if (!suppressPrint) console.log(str);
+    return str.split('\n');
 }
 
 var getNextStates = (state: state) : state[] => {
@@ -94,11 +98,26 @@ var getNextStates = (state: state) : state[] => {
             var newState = copyState(state);
             newState.burrows[i].pop();
             newState.alley[rest] = pod;
-            newState.points += addPoints;
+            newState.points += addPoints*multiplier[pod];
             options.push(newState);
         }
     }
     return options;
+}
+
+var getNextStatesAndPrint = (state: state, fileName: string = 'nextStates.txt') : state[] => {
+    var stateStrings = printState(state, true);
+    var middleStrings : string[]  = h.ea(stateStrings.length, "    "); 
+    middleStrings[Math.ceil(stateStrings.length / 2)] = " => ";
+    var nextStates = getNextStates(state);
+    var nextStateStrings = nextStates.map(s => printState(s, true));
+    for (var i=0; i<stateStrings.length; i++) {
+        stateStrings[i] += middleStrings[i] + nextStateStrings.map(s => s[i]).join("  ");
+    }
+
+    //console.log(stateStrings.join('\n'));
+    h.write(23, fileName, stateStrings.join('\n'));
+    return nextStates;
 }
 
 var equalStates = (s1: state, s2: state) : boolean => h.equals2(s1.burrows, s2.burrows) && h.equals2(s1.alley, s2.alley);
@@ -123,6 +142,8 @@ var input = h.read(23,'amphipods.txt').mape(l => l.replace(/[\W]/g,'').replace(/
 h.print(input);
 var pods = h.range(0, input.length);
 var depth = input[0].length;
+var multiplier = h.range(0,input.length).map(i => Math.pow(10, i));
+h.print(multiplier);
 
 var alley : number[] = h.ea(11,-1);
 var entryPoints = pods.map(r => getEntryPoint(r));
@@ -144,13 +165,7 @@ var statesToCheck: state[] = [startState];
 var lowestEndPoints = 1E8;
 var loopCounter = 0;
 
-var testState = startState;
-printState(testState);
-var statesAfterStart = getNextStates(testState);
-h.print(`${statesAfterStart.length} states after 1st move:`)
-for (const state of statesAfterStart) {
-    printState(state);
-}
+getNextStatesAndPrint(getNextStates(startState)[2]);
 
 // while (statesToCheck.length > 0) {
 //     if (loopCounter % 50 == 0) h.print(`loop ${loopCounter}: ${statesToCheck.length} states to check`);

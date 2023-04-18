@@ -8,7 +8,7 @@ export function stringify(object: any) : string {
     return JSON.stringify(object, null, 4);
 }
 
-export function write(day:number, filename:string,content:string, options:string='') {
+export function write(day:number, filename:string, content:string, options:string='') {
     // options
     const example: boolean = options.includes('ex');
 
