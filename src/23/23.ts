@@ -192,9 +192,13 @@ var loopCounter = 0;
 var checkedStates : state[] = [];
 
 // getNextStatesAndPrint(getNextStates(startState)[2]);
-
+console.time("loops")
 while (statesToCheck.length > 0) {
-    if (loopCounter % 50 == 0) h.print(`loop ${loopCounter}: ${statesToCheck.length} states to check`);
+    if (loopCounter % 50 == 0) {
+        h.print(`loop ${loopCounter}: ${statesToCheck.length} states to check`);
+        console.timeEnd("loops");
+        console.time("loops");
+    }
     var currentState = statesToCheck.shift();
     var nextStates = getNextStates(currentState!);
     while (nextStates.length > 0) {
@@ -217,3 +221,4 @@ while (statesToCheck.length > 0) {
     checkedStates.push(currentState!);
     loopCounter++;
 }
+console.timeEnd("loops");
