@@ -24,6 +24,7 @@ var getRestOptions = (entryPoint:number, alley: number[], rests: number[]) : num
     }
     return options;
 }
+
 var getDirectMove = (state: state) : state | undefined => {
     // direct move from alley
     for (var i = 0; i < state.alley.length; i++) {
@@ -63,6 +64,30 @@ var getDirectMove = (state: state) : state | undefined => {
     }
 
     return undefined;
+}
+
+var homeMovesOverlap = (from1: number, to1: number, from2: number, to2: number) : boolean => {
+    return (from1 < from2 && to1 > from2) || (from1 < to2 && to1 > to2);
+}
+
+var isDeadState = (state: state) : boolean => {
+    // state is dead if two pods in the alley are in between each other's path to home
+    for (var i=0; i<state.alley.length; i++) {
+        if (state.alley[i] == -1) continue;
+        var pod = state.alley[i];
+        var entryPoint = i;
+        var homePoint = getEntryPoint(pod);
+        var direction = Math.sign(homePoint - entryPoint);
+        for (const j of h.range(Math.min(entryPoint, homePoint) + 1, Math.max(entryPoint, homePoint))) {
+            if (state.alley[j] == -1) continue;
+            var pod2 = state.alley[j];
+            var entryPoint2 = j;
+            var homePoint2 = getEntryPoint(pod2);
+            var direction2 = Math.sign(homePoint2 - entryPoint2);
+            if (direction !== direction2 && homeMovesOverlap(entryPoint, homePoint, entryPoint2, homePoint2)) return true;
+        }
+    }
+    return false;
 }
 
 var printState = (state: state, suppressPrint:boolean = false) : string[] => {
@@ -164,27 +189,31 @@ var startState : state = {
 var statesToCheck: state[] = [startState];
 var lowestEndPoints = 1E8;
 var loopCounter = 0;
+var checkedStates : state[] = [];
 
-getNextStatesAndPrint(getNextStates(startState)[2]);
+// getNextStatesAndPrint(getNextStates(startState)[2]);
 
-// while (statesToCheck.length > 0) {
-//     if (loopCounter % 50 == 0) h.print(`loop ${loopCounter}: ${statesToCheck.length} states to check`);
-//     var currentState = statesToCheck.shift();
-//     var nextStates = getNextStates(currentState!);
-//     while (nextStates.length > 0) {
-//         var nextState = nextStates.pop();
-//         if (stateIsFinal(nextState!)) {
-//             if (nextState!.points < lowestEndPoints) {
-//                 lowestEndPoints = nextState!.points;
-//                 h.print(`new lowest state on loop ${loopCounter}: ${nextState!.points}`);
-//             }
-//             lowestEndPoints = Math.min(lowestEndPoints, nextState!.points);
-//             continue;
-//         }
-//         statesToCheck.push(nextState!);
-//     }
-//     statesToCheck = statesToCheck.filter(s => s.points < lowestEndPoints);
-//     statesToCheck = removeDuplicates(statesToCheck);
-//     sortStates(statesToCheck);
-//     loopCounter++;
-// }
+while (statesToCheck.length > 0) {
+    if (loopCounter % 50 == 0) h.print(`loop ${loopCounter}: ${statesToCheck.length} states to check`);
+    var currentState = statesToCheck.shift();
+    var nextStates = getNextStates(currentState!);
+    while (nextStates.length > 0) {
+        var nextState = nextStates.pop();
+        if (stateIsFinal(nextState!)) {
+            if (nextState!.points < lowestEndPoints) {
+                lowestEndPoints = nextState!.points;
+                h.print(`new lowest state on loop ${loopCounter}: ${nextState!.points}`);
+            }
+            lowestEndPoints = Math.min(lowestEndPoints, nextState!.points);
+            continue;
+        }
+        if (isDeadState(nextState!)) continue;
+        if (checkedStates.filter((s:state) => equalStates(s, nextState!) && nextState!.points >= s.points).length > 0) continue;
+        statesToCheck.push(nextState!);
+    }
+    statesToCheck = statesToCheck.filter(s => s.points < lowestEndPoints);
+    statesToCheck = removeDuplicates(statesToCheck);
+    sortStates(statesToCheck);
+    checkedStates.push(currentState!);
+    loopCounter++;
+}
