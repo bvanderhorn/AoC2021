@@ -6,8 +6,8 @@ var canSet = (pod: number, burrows: number[][]) : boolean => isEmptyOrContainsOn
 var stepsOut = (lengthBefore:number) : number => depth - lengthBefore + 1;
 var stepsIn = (lengthBefore: number) : number => depth - lengthBefore;
 var isReachable = (alley: number[], from: number, to: number) : boolean => {
-    var subAlley = alley.slice(Math.min(from, to) + 1, Math.max(from, to) + 1);
-    return subAlley.every(x => x == -1);
+    var subAlley = alley.slice(Math.min(from, to) + 1, Math.max(from, to));
+    return subAlley.every(x => x == -1) && alley[to] == -1;
 }
 
 var copyState = (state: state) : state => {
@@ -15,7 +15,8 @@ var copyState = (state: state) : state => {
         burrows: state.burrows.copy(),
         alley: state.alley.copy(),
         points: state.points,
-        moves: state.moves
+        moves: state.moves,
+        history: state.history.map(x => x)
     }
 };
 var getRestOptions = (entryPoint:number, alley: number[], rests: number[]) : number[] => {
@@ -42,6 +43,7 @@ var getDirectMove = (state: state) : state | undefined => {
             newState.burrows[pod].push(pod);
             newState.points += addPoints*multiplier[pod];
             newState.moves++;
+            newState.history.push(state);
             return newState;
         }
     }
@@ -62,6 +64,7 @@ var getDirectMove = (state: state) : state | undefined => {
             newState2.burrows[pod].push(pod);
             newState2.points += addPoints*multiplier[pod];
             newState2.moves++;
+            newState2.history.push(state);
             return newState2;
         }
     }
@@ -128,10 +131,17 @@ var getNextStates = (state: state) : state[] => {
             newState.alley[rest] = pod;
             newState.points += addPoints*multiplier[pod];
             newState.moves++;
+            newState.history.push(state);
             options.push(newState);
         }
     }
     return options;
+}
+
+var printStates = (states: state[], fileName:string) : void => {
+    var stateStrings = states.map(s => printState(s, true));
+    var lines = stateStrings[0].map((_, i) => stateStrings.map(s => s[i]).join("  "));
+    h.write(23, `${fileName}.txt`, lines.join(`\n`));
 }
 
 var getNextStatesAndPrint = (state: state, fileName: string = 'nextStates.txt') : state[] => {
@@ -149,6 +159,12 @@ var getNextStatesAndPrint = (state: state, fileName: string = 'nextStates.txt') 
     return nextStates;
 }
 
+var printHistory = (state: state) : void => {
+    var states = state.history;
+    states.push(state);
+    printStates(states, `moves_${state.moves}_points_${state.points}`);
+}
+
 var equalStates = (s1: state, s2: state) : boolean => h.equals2(s1.burrows, s2.burrows) && h.equals2(s1.alley, s2.alley);
 
 var sortStates = (states: state[]) : void => {
@@ -159,9 +175,9 @@ var stateIsFinal = (state: state) : boolean => state.burrows.every((_, i) => can
 var removeDuplicates = (states: state[]) : state[] => {
     var result : state[] = [];
     for (const state of states) {
-        var existing = result.find(s => equalStates(s, state));
-        if (existing == undefined) result.push(state);
-        else if (state.points < existing.points) existing.points = state.points;
+        var existing = result.findIndex(s => equalStates(s, state));
+        if (existing == -1) result.push(state);
+        else if (state.points < states[existing].points) states[existing] = state;
     }
     return result;
 }
@@ -183,60 +199,62 @@ type state = {
     burrows: number[][],
     alley: number[],
     points: number,
-    moves: number
+    moves: number,
+    history: state[]
 }
+
+
+// testing
+
+var testDeadState : state = {
+    burrows: [[0],[1,1],[2,2],[3]],
+    alley: [-1,-1,-1,3,-1,-1,-1,0,-1,-1,-1],
+    points: 100,
+    moves: 1,
+    history: []
+}
+
+var testState : state = {
+    burrows: [[1,3],[0],[3,1],[2]],
+    alley: [-1,0,-1,-1,-1,2,-1,-1,-1,-1,-1],
+    points: 100,
+    moves: 1,
+    history: []
+}
+
+h.print(getRestOptions(4, [-1, 3, -1, -1, -1, 2 , -1, -1, -1, -1, -1], [0,1,3,5,7,9,10]))
+h.print(stateIsDead(testDeadState));
 
 // Dijkstra
 var startState : state = {
     burrows: input,
     alley: alley,
     points: 0,
-    moves: 0
+    moves: 0,
+    history: []
 }
+
+getNextStatesAndPrint(startState);
+
+// startState = {
+//     burrows: [[1,3], [0,0], [3,1], [2]],
+//     alley: [-1,-1,  -1,-1,-1,-1,-1,-1,-1,  2,-1],
+//     points: 200,
+//     moves: 1,
+//     history: []
+// }
+
 var statesToCheck: state[] = [startState];
 var lowestEndPoints = 1E8;
 var loopCounter = 0;
 var checkedStates : state[] = [];
 
-var testDeadState : state = {
-    burrows: [[0],[1,1],[2,2],[3]],
-    alley: [-1,-1,-1,3,-1,-1,-1,0,-1,-1,-1],
-    points: 100,
-    moves: 1
-}
-
-var testAliveState : state = {
-    burrows: [[0],[1,1],[2,2],[3]],
-    alley: [-1,-1,-1,3,-1,-1,-1,-1,-1,0,-1],
-    points: 100,
-    moves: 1
-}
-
-getNextStatesAndPrint(testDeadState);
-//h.print(getRestOptions(2, [-1, -1, -1, -1, -1, -1 , -1, -1, -1, -1, -1], [0,1,3,5,7,9,10]))
-
-var finalState : state = {
-    burrows: [[0,0],[1,1],[2,2],[3,3]],
-    alley: [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
-    points: 100,
-    moves: 50
-}
-
-// h.print(stateIsDead(testState));
-// printState(getDirectMove(testState)!);
-// h.print(getDirectMove(testState));
-
-console.time("1000 loops")
-// var monitorFreq = 1000;
 var moves = 0;
 while (statesToCheck.length > 0) {
     if (moves != statesToCheck[0].moves) {
         moves = statesToCheck[0].moves;
-        h.print(`checked states: ${checkedStates.length}, next move: ${moves}, removing duplicates...`);
-        console.time("removed duplicates");
         statesToCheck = removeDuplicates(statesToCheck);
-        console.timeEnd("removed duplicates");
-        h.print(`states in move ${moves}: ${statesToCheck.length}, up to state: ${checkedStates.length + statesToCheck.length}`);
+        h.print(`move: ${moves}, states: ${statesToCheck.length}`);
         //sortStates(statesToCheck);
     }
     var currentState = statesToCheck.shift();
@@ -246,7 +264,8 @@ while (statesToCheck.length > 0) {
         if (stateIsFinal(nextState!)) {
             if (nextState!.points < lowestEndPoints) {
                 lowestEndPoints = nextState!.points;
-                h.print(`new lowest state on loop ${loopCounter}: ${nextState!.points}`);
+                h.print(`new lowest finish on move ${nextState!.moves}: ${nextState!.points}`);
+                printHistory(nextState!);
             }
             lowestEndPoints = Math.min(lowestEndPoints, nextState!.points);
             continue;
@@ -259,4 +278,3 @@ while (statesToCheck.length > 0) {
     checkedStates.push(currentState!);
     loopCounter++;
 }
-console.timeEnd("1000 loops");
