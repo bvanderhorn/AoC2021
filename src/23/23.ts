@@ -101,8 +101,10 @@ var printState = (state: state, suppressPrint:boolean = false) : string[] => {
     var str = "\n" + pointString + " ".repeat(alley.length + 2 - pointString.length) + "\n";
     str +=  "#".repeat(alley.length + 2) + '\n';
     str +=  `#${state.alley.map(x => x == -1 ? '.' : types[x]).join('')}#\n`;
-    str += `###${state.burrows.map(b => b.length > 1 ? types[b[1]] : '.').join('#')}###\n`;
-    str += `  #${state.burrows.map(b => b.length > 0 ? types[b[0]] : '.').join('#')}#  \n`;
+
+    var burrowStrings = input[0].map((_:any,i:number) => `  #${state.burrows.map(b => b.length > i ? types[b[i]] : '.').join('#')}#  `).reverse();
+    burrowStrings[0] = burrowStrings[0].replace('  #', '###').replace('#  ', '###');
+    str += burrowStrings.join('\n') + '\n';
     str += '  ' + '#'.repeat(alley.length-2) + '  \n';
     
     if (!suppressPrint) console.log(str);
@@ -180,9 +182,10 @@ var removeDuplicates = (states: state[]) : state[] => {
 
 // init
 var types = 'ABCD';
-var part = 1;
+var part = 2;
 var input = h.read(23,'amphipods.txt').mape(l => l.replace(/[\W]/g,'').replace(/\w/g, (m:string) => types.indexOf(m))).filter(l => l).reverse().split('').transpose().tonum();
 if (part == 1) input = input.map(l => [l[0], l[3]]);
+h.print(input);
 var pods = h.range(0, input.length);
 var depth = input[0].length;
 var multiplier = h.range(0,input.length).map(i => Math.pow(10, i));
