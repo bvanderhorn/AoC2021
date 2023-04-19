@@ -144,7 +144,7 @@ var printStates = (states: state[], fileName:string) : void => {
     h.write(23, `${fileName}.txt`, lines.join(`\n`));
 }
 
-var getNextStatesAndPrint = (state: state, fileName: string = 'nextStates.txt') : state[] => {
+var printNextStates = (state: state, fileName: string = 'nextStates.txt') : state[] => {
     var stateStrings = printState(state, true);
     var middleStrings : string[]  = h.ea(stateStrings.length, "    "); 
     middleStrings[Math.ceil(stateStrings.length / 2)] = " => ";
@@ -154,7 +154,6 @@ var getNextStatesAndPrint = (state: state, fileName: string = 'nextStates.txt') 
         stateStrings[i] += middleStrings[i] + nextStateStrings.map(s => s[i]).join("  ");
     }
 
-    //console.log(stateStrings.join('\n'));
     h.write(23, fileName, stateStrings.join('\n'));
     return nextStates;
 }
@@ -200,28 +199,6 @@ type state = {
     history: state[]
 }
 
-
-// testing
-
-var testDeadState : state = {
-    burrows: [[0],[1,1],[2,2],[3]],
-    alley: [-1,-1,-1,3,-1,-1,-1,0,-1,-1,-1],
-    points: 100,
-    moves: 1,
-    history: []
-}
-
-var testState : state = {
-    burrows: [[1,3],[0],[3,1],[2]],
-    alley: [-1,0,-1,-1,-1,2,-1,-1,-1,-1,-1],
-    points: 100,
-    moves: 1,
-    history: []
-}
-
-h.print(getRestOptions(4, [-1, 3, -1, -1, -1, 2 , -1, -1, -1, -1, -1], [0,1,3,5,7,9,10]))
-h.print(stateIsDead(testDeadState));
-
 // Dijkstra
 var startState : state = {
     burrows: input,
@@ -230,16 +207,6 @@ var startState : state = {
     moves: 0,
     history: []
 }
-
-getNextStatesAndPrint(startState);
-
-// startState = {
-//     burrows: [[1,3], [0,0], [3,1], [2]],
-//     alley: [-1,-1,  -1,-1,-1,-1,-1,-1,-1,  2,-1],
-//     points: 200,
-//     moves: 1,
-//     history: [copyState(startState)]
-// }
 
 var statesToCheck: state[] = [startState];
 var lowestEndPoints = 1E8;
