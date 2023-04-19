@@ -158,10 +158,10 @@ var printNextStates = (state: state, fileName: string = 'nextStates.txt') : stat
     return nextStates;
 }
 
-var printHistory = (state: state) : void => {
+var printHistory = (state: state, part: number) : void => {
     var states = state.history;
     states.push(state);
-    printStates(states, `moves_${state.moves}_points_${state.points}`);
+    printStates(states, `part_${part}_moves_${state.moves}_points_${state.points}`);
 }
 
 var equalStates = (s1: state, s2: state) : boolean => h.equals2(s1.burrows, s2.burrows) && h.equals2(s1.alley, s2.alley);
@@ -180,12 +180,12 @@ var removeDuplicates = (states: state[]) : state[] => {
 
 // init
 var types = 'ABCD';
+var part = 1;
 var input = h.read(23,'amphipods.txt').mape(l => l.replace(/[\W]/g,'').replace(/\w/g, (m:string) => types.indexOf(m))).filter(l => l).reverse().split('').transpose().tonum();
-h.print(input);
+if (part == 1) input = input.map(l => [l[0], l[3]]);
 var pods = h.range(0, input.length);
 var depth = input[0].length;
 var multiplier = h.range(0,input.length).map(i => Math.pow(10, i));
-h.print(multiplier);
 
 var alley : number[] = h.ea(11,-1);
 var entryPoints = pods.map(r => getEntryPoint(r));
@@ -208,9 +208,12 @@ var startState : state = {
     history: []
 }
 
+h.print(`\n --- solving day 23 part ${part} ---`);
+printState(startState);
+
 var statesToCheck: state[] = [startState];
 var lowestEndPoints = 1E8;
-var loopCounter = 0;
+var lowestFinishState : state;
 var checkedStates : state[] = [];
 
 var moves = 0;
@@ -228,9 +231,9 @@ while (statesToCheck.length > 0) {
         if (stateIsFinal(nextState!)) {
             if (nextState!.points < lowestEndPoints) {
                 lowestEndPoints = nextState!.points;
+                lowestFinishState = nextState!;
                 statesToCheck = statesToCheck.filter(s => s.points < lowestEndPoints);
                 h.print(`new lowest finish on move ${nextState!.moves}: ${nextState!.points}`);
-                printHistory(nextState!);
             }
             lowestEndPoints = Math.min(lowestEndPoints, nextState!.points);
             continue;
@@ -240,6 +243,6 @@ while (statesToCheck.length > 0) {
         statesToCheck.push(nextState!);
     }
     checkedStates.push(currentState!);
-    loopCounter++;
 }
+printHistory(lowestFinishState!, part);
 console.timeEnd("day 23");
