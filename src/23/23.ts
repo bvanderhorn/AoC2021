@@ -167,9 +167,6 @@ var printHistory = (state: state) : void => {
 
 var equalStates = (s1: state, s2: state) : boolean => h.equals2(s1.burrows, s2.burrows) && h.equals2(s1.alley, s2.alley);
 
-var sortStates = (states: state[]) : void => {
-    states.sort((a,b) => a.moves != b.moves ? a.moves - b.moves : a.points - b.points);
-}
 var stateIsFinal = (state: state) : boolean => state.burrows.every((_, i) => canSet(i, state.burrows)) && state.alley.every(x => x == -1);
 
 var removeDuplicates = (states: state[]) : state[] => {
@@ -177,7 +174,7 @@ var removeDuplicates = (states: state[]) : state[] => {
     for (const state of states) {
         var existing = result.findIndex(s => equalStates(s, state));
         if (existing == -1) result.push(state);
-        else if (state.points < states[existing].points) states[existing] = state;
+        else if (state.points < result[existing].points) result[existing] = state;
     }
     return result;
 }
@@ -241,7 +238,7 @@ getNextStatesAndPrint(startState);
 //     alley: [-1,-1,  -1,-1,-1,-1,-1,-1,-1,  2,-1],
 //     points: 200,
 //     moves: 1,
-//     history: []
+//     history: [copyState(startState)]
 // }
 
 var statesToCheck: state[] = [startState];
@@ -250,12 +247,12 @@ var loopCounter = 0;
 var checkedStates : state[] = [];
 
 var moves = 0;
+console.time("day 23");
 while (statesToCheck.length > 0) {
     if (moves != statesToCheck[0].moves) {
         moves = statesToCheck[0].moves;
         statesToCheck = removeDuplicates(statesToCheck);
         h.print(`move: ${moves}, states: ${statesToCheck.length}`);
-        //sortStates(statesToCheck);
     }
     var currentState = statesToCheck.shift();
     var nextStates = getNextStates(currentState!);
@@ -264,6 +261,7 @@ while (statesToCheck.length > 0) {
         if (stateIsFinal(nextState!)) {
             if (nextState!.points < lowestEndPoints) {
                 lowestEndPoints = nextState!.points;
+                statesToCheck = statesToCheck.filter(s => s.points < lowestEndPoints);
                 h.print(`new lowest finish on move ${nextState!.moves}: ${nextState!.points}`);
                 printHistory(nextState!);
             }
@@ -273,8 +271,8 @@ while (statesToCheck.length > 0) {
         if (stateIsDead(nextState!)) continue;
         if (nextState!.points > lowestEndPoints) continue;
         statesToCheck.push(nextState!);
-        //statesToCheck.sort((a,b) => a.moves != b.moves ? a.moves - b.moves : a.points - b.points);
     }
     checkedStates.push(currentState!);
     loopCounter++;
 }
+console.timeEnd("day 23");
