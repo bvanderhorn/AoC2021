@@ -70,7 +70,7 @@ var homeMovesOverlap = (from1: number, to1: number, from2: number, to2: number) 
     return (from1 < from2 && to1 > from2) || (from1 < to2 && to1 > to2);
 }
 
-var isDeadState = (state: state) : boolean => {
+var stateIsDead = (state: state) : boolean => {
     // state is dead if two pods in the alley are in between each other's path to home
     for (var i=0; i<state.alley.length; i++) {
         if (state.alley[i] == -1) continue;
@@ -106,7 +106,7 @@ var printState = (state: state, suppressPrint:boolean = false) : string[] => {
 var getNextStates = (state: state) : state[] => {
     // return direct move if exists
     var directMove = getDirectMove(state);
-    if (directMove != undefined) return [directMove];
+    if (directMove != undefined) return getNextStates(directMove);
 
     // else calculate possible moves; since no direct move exists, we can only move from burrow to alley
     var options : state[] = [];
@@ -159,7 +159,7 @@ var removeDuplicates = (states: state[]) : state[] => {
 var sortStates = (states: state[]) : void => {
     states.sort((a,b) => a.points - b.points);
 }
-var stateIsFinal = (state: state) : boolean => state.burrows.every((_, i) => canSet(i, state.burrows)) && state.alley.every(x => x == undefined);
+var stateIsFinal = (state: state) : boolean => state.burrows.every((_, i) => canSet(i, state.burrows)) && state.alley.every(x => x == -1);
 
 // init
 var types = 'ABCD';
@@ -191,7 +191,31 @@ var lowestEndPoints = 1E8;
 var loopCounter = 0;
 var checkedStates : state[] = [];
 
-// getNextStatesAndPrint(getNextStates(startState)[2]);
+var testDeadState : state = {
+    burrows: [[0],[1,1],[2,2],[3]],
+    alley: [-1,-1,-1,3,-1,-1,-1,0,-1,-1,-1],
+    points: 100
+}
+
+var testAliveState : state = {
+    burrows: [[0],[1,1],[2,2],[3]],
+    alley: [-1,-1,-1,3,-1,-1,-1,-1,-1,0,-1],
+    points: 100
+}
+
+getNextStatesAndPrint(testDeadState);
+//h.print(getRestOptions(2, [-1, -1, -1, -1, -1, -1 , -1, -1, -1, -1, -1], [0,1,3,5,7,9,10]))
+
+var finalState : state = {
+    burrows: [[0,0],[1,1],[2,2],[3,3]],
+    alley: [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    points: 100
+}
+
+// h.print(stateIsDead(testState));
+// printState(getDirectMove(testState)!);
+// h.print(getDirectMove(testState));
+
 console.time("loops")
 while (statesToCheck.length > 0) {
     if (loopCounter % 50 == 0) {
@@ -211,13 +235,13 @@ while (statesToCheck.length > 0) {
             lowestEndPoints = Math.min(lowestEndPoints, nextState!.points);
             continue;
         }
-        if (isDeadState(nextState!)) continue;
+        if (stateIsDead(nextState!)) continue;
         if (checkedStates.filter((s:state) => equalStates(s, nextState!) && nextState!.points >= s.points).length > 0) continue;
         statesToCheck.push(nextState!);
     }
     statesToCheck = statesToCheck.filter(s => s.points < lowestEndPoints);
-    statesToCheck = removeDuplicates(statesToCheck);
-    sortStates(statesToCheck);
+    //if (loopCounter % 1000 == 0 ) statesToCheck = removeDuplicates(statesToCheck);
+    //sortStates(statesToCheck);
     checkedStates.push(currentState!);
     loopCounter++;
 }
