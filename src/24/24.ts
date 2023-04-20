@@ -9,8 +9,7 @@ var executeInstruction = (instruction: string[], state: number[], input: number)
     if (instruction[0] == 'inp') executionString = `${instruction[1]} = ${input}`;
     else executionString = `${instruction[1]} = +(${instruction[1]} ${operator[command.findIndex(x => x==instruction[0])]} ${instruction[2]})`;
     
-    // h.print(" executiong: " + executionString);
-    eval(executionString);
+    h.print(" executiong: " + executionString + " => " + eval(executionString));
 
     state[0] = w;
     state[1] = x;
@@ -35,4 +34,4 @@ h.print(instructionSets[0]);
 // var state = [0,0,0,0];
 // executeInstruction(["add", "w", "1"], state, 0);
 h.print(executeInstructionSet(instructionSets[0], 1));
-h.print(executeMonad(instructionSets, "13579246899999"));
+// h.print(executeMonad(instructionSets, "13579246899999"));
