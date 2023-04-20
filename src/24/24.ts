@@ -1,12 +1,13 @@
 import * as h from '../helpers';
+
 // helpers
 var execute = (instruction: string[], state: number[], input: number) : void {
     let [w, x ,y, z] = state;
-    
-    switch (instruction[0]) {
-        case 'inp' : eval(instruction[1]+ " = " + input); break;
-    }
+    var operator = {add:"+", mul:"*", mod:"%", div:"/", eql:'==='};
 
+    if (instruction[0] == 'inp') eval(`${instruction[1]} = ${input}`);
+    else eval(`${instruction[1]} = ${instruction[1]} ${operator[instruction[0]]} ${instruction[2]}`);
+    
     state = [w, x, y, z];
 }
 
