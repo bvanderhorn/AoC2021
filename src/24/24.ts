@@ -18,6 +18,7 @@ var executeInstruction = (instruction: string[], state: number[], input: number)
 }
 var executeInstructionSet = (instructions: string[][], input: number, state: number[] = [0,0,0,0]) : number[] => {
     instructions.forEach(x => executeInstruction(x, state, input));
+    h.print(state);
     return state;
 }
 var executeMonad = (instructionSets: string[][][], input: string, state: number[] = [0,0,0,0]) : number[] => {
