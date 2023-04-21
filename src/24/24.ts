@@ -52,24 +52,16 @@ var instructionSets = h.simpleRead(24,'monad.txt').split(/inp/).filter(x => x!= 
 var zmin = [0,    0,     0,      0,     0,   0,     0,   0,     0,   0,     0, 234,  9, 0]
 var zmax = [17, 467, 12167, 316367, 12167, 467, 12167, 467, 12167, 467, 12167, 467, 17, 0]
 
-// var wxyz = [0,0,0,0];
-// executeInstruction(["add", "w", "1"], wxyz, 0);
-// h.print(executeInstructionSet(instructionSets[0], 9));
 // printInstructionSets(instructionSets);
-
 // executeMonad(instructionSets, "99969591111111");
-h.print(Math.pow(9,10));
-h.print(7279%26-13);
 
 type state = {
     numbers: number[],
     zs: number[]
 }
 
-var test : number[] = [];
-h.print(test);
-
 // search
+console.time("day 24 part 1");
 var getHighestMatchingState = (state: state, instructionSets: string[][][]) : state | undefined => {
     h.print("checking: " + state.numbers.join(" ") + " _".repeat(14 - state.numbers.length));
     for (var nextState of getNextStates(state, instructionSets)) {
@@ -81,8 +73,8 @@ var getHighestMatchingState = (state: state, instructionSets: string[][][]) : st
     }
     return undefined;
 }
-
 var highestMatching = getHighestMatchingState({numbers: [], zs: [0]}, instructionSets);
 
 h.print(" => highest matching serial number: " + highestMatching!.numbers.join(""));
 h.print(" with zs: " + JSON.stringify(highestMatching!.zs));
+console.timeEnd("day 24 part 1");
