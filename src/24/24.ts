@@ -27,6 +27,10 @@ var executeMonad = (instructionSets: string[][][], input: string, state: number[
     });
     return state;
 }
+var printInstructionSets = (instructionSets: string[][][]) : void => {
+    var str = instructionSets[0].map((_,i) => instructionSets.map(x => x[i].join(" ") + " ".repeat(9 - x[i].join(" ").length)).join(" ")).join("\n");
+    h.write(24, "instructionsets.txt", str);
+}
 
 var instructionSets = h.simpleRead(24,'monad.txt').split(/inp/).filter(x => x!= "").map(x => "inp" + x).split(/\r?\n/).map(x => x.filter(l => l != '')).split(" ");
 h.print(instructionSets[0]);
@@ -35,3 +39,4 @@ h.print(instructionSets[0]);
 // executeInstruction(["add", "w", "1"], state, 0);
 // h.print(executeInstructionSet(instructionSets[0], 9));
 h.print(executeMonad(instructionSets, "13579246899999"))
+printInstructionSets(instructionSets);
