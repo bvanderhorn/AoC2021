@@ -66,7 +66,7 @@ type state = {
 var part = 2;
 console.time("day 24 part " + part);
 var getFirstMatchingState = (state: state, instructionSets: string[][][], part: number) : state | undefined => {
-    if (state.numbers.length < 4) h.print("checking: " + state.numbers.join(" ") + " _".repeat(14 - state.numbers.length));
+    if (state.numbers.length < 5) h.print("checking: " + state.numbers.join(" ") + " _".repeat(14 - state.numbers.length));
     for (var nextState of getNextStates(state, instructionSets, part)) {
         if (nextState.numbers.length == 14) return nextState;
         else {
