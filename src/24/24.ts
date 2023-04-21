@@ -32,10 +32,12 @@ var printInstructionSets = (instructionSets: string[][][]) : void => {
     h.write(24, "instructionsets.txt", str);
 }
 
-var getNextStates = (state: state, instructionSets: string[][][]) : state[] => {
+var getNextStates = (state: state, instructionSets: string[][][], part: number) : state[] => {
     var states: state[] = [];
     var q = state.numbers.length;
-    for (const i of h.range(1, 10).reverse()) {
+    var checkNumbers = part == 2 ? h.range(1, 10) : h.range(1, 10).reverse();
+
+    for (const i of checkNumbers) {
         var wxyz = executeInstructionSet(instructionSets[q], i, [0,0,0,state.zs.last()]);
         if (wxyz[3] >= zmin[q] && wxyz[3] <= zmax[q]) {
             states.push({
@@ -61,20 +63,21 @@ type state = {
 }
 
 // search
-console.time("day 24 part 1");
-var getHighestMatchingState = (state: state, instructionSets: string[][][]) : state | undefined => {
-    h.print("checking: " + state.numbers.join(" ") + " _".repeat(14 - state.numbers.length));
-    for (var nextState of getNextStates(state, instructionSets)) {
+var part = 2;
+console.time("day 24 part " + part);
+var getFirstMatchingState = (state: state, instructionSets: string[][][], part: number) : state | undefined => {
+    if (state.numbers.length < 4) h.print("checking: " + state.numbers.join(" ") + " _".repeat(14 - state.numbers.length));
+    for (var nextState of getNextStates(state, instructionSets, part)) {
         if (nextState.numbers.length == 14) return nextState;
         else {
-            var q = getHighestMatchingState(nextState, instructionSets);
+            var q = getFirstMatchingState(nextState, instructionSets, part);
             if (q != undefined) return q;
         }
     }
     return undefined;
 }
-var highestMatching = getHighestMatchingState({numbers: [], zs: [0]}, instructionSets);
+var firstMatching = getFirstMatchingState({numbers: [], zs: [0]}, instructionSets, part);
 
-h.print(" => highest matching serial number: " + highestMatching!.numbers.join(""));
-h.print(" with zs: " + JSON.stringify(highestMatching!.zs));
-console.timeEnd("day 24 part 1");
+h.print(` => ${part == 1 ? "highest" : "lowest"} matching serial number: ` + firstMatching!.numbers.join(""));
+h.print(" with zs: " + JSON.stringify(firstMatching!.zs));
+console.timeEnd("day 24 part " + part);
