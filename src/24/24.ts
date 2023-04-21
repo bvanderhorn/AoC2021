@@ -28,7 +28,9 @@ var executeMonad = (instructionSets: string[][][], input: string, state: number[
     return state;
 }
 var printInstructionSets = (instructionSets: string[][][]) : void => {
-    var str = instructionSets[0].map((_,i) => instructionSets.map(x => x[i].join(" ") + " ".repeat(9 - x[i].join(" ").length)).join(" ")).join("\n");
+    var columnWidth = 10;
+    var str = h.range(0, instructionSets.length).map(x => "# " + x + " ".repeat(columnWidth - ("# " + x).length)).join("") + "\n";
+    str += instructionSets[0].map((_,i) => instructionSets.map(x => x[i].join(" ") + " ".repeat(columnWidth -1 - x[i].join(" ").length)).join(" ")).join("\n");
     h.write(24, "instructionsets.txt", str);
 }
 
