@@ -12,8 +12,19 @@ var moveRight = (state: number[][], cucumber: number) : number[][] => {
 var move = (state: number[][]) : number[][] => moveRight(moveRight(state, 1).transpose(), 2).transpose();
 
 // init
-var cucumbers = h.read(25, 'cucumbers.txt','ex').split("").mape( x => [0,1,2][[".", ">", "v"].findIndex(i => i == x)]);
+var cucumbers = h.read(25, 'cucumbers.txt').split("").mape( x => [0,1,2][[".", ">", "v"].findIndex(i => i == x)]);
 
-printState(cucumbers);
-h.print("");
-printState(move(cucumbers));
+// part 1
+var moves = 0;
+var currentState = cucumbers;
+console.time("day 25 part 1");
+while(true) {
+    moves++;
+    if (moves % 50 == 0) h.print(" move " + moves + " ...");
+    var newState = move(currentState);
+    if (h.equals2(newState, currentState)) break;
+    currentState = newState;
+}
+h.print(" cucumbers stopped moving after " + moves + " moves : ");
+printState(currentState);
+console.timeEnd("day 25 part 1");
