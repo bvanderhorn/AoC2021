@@ -49,19 +49,23 @@ declare global {
         print() : void;
         print(j1:string) : void;
         print(j1:string, j2:string) : void;
+        print(j1:string, j2:string, sub:number|number[]) : void;
 
         printc(matches: (x: any) => boolean) : void;
         printc(matches: (x: any) => boolean, color:string) : void;
         printc(matches: (x: any) => boolean, color:string,j1:string) : void;
         printc(matches: (x: any) => boolean, color:string,j1:string, j2:string) : void;
+        printc(matches: (x: any) => boolean, color:string,j1:string, j2:string, sub:number|number[]) : void;
 
         string() : string;
         string(j1:string) : string;
         string(j1:string, j2:string) : string;
+        string(j1:string, j2:string, sub:number|number[]) : string;
 
         stringc(matches: (x: any) => boolean, color:string) : string;
         stringc(matches: (x: any) => boolean, color:string,j1:string) : string;
         stringc(matches: (x: any) => boolean, color:string,j1:string, j2:string) : string;
+        stringc(matches: (x: any) => boolean, color:string,j1:string, j2:string, sub:number|number[]) : string;
     }
 }
 
@@ -71,8 +75,8 @@ if(!Array.prototype.print) {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function print(this: any[][], j1:string = '',j2:string='\n') : void {
-            console.log(this.string(j1,j2));
+	value: function print(this: any[][], j1:string = '',j2:string='\n', sub: number | number[] = 0) : void {
+            console.log(this.string(j1,j2,sub));
         }
     });
 }
@@ -84,8 +88,10 @@ if(!Array.prototype.string) {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function string(this: any[][], j1:string = '',j2:string='\n') : string {
-            return this.map(l=> l.join(j1)).join(j2);
+	value: function string(this: any[][], j1:string = '',j2:string='\n', sub: number|number[] = 0) : string {
+            if (sub == 0) return this.map(l=> l.join(j1)).join(j2);
+            if (typeof sub == 'number') return this.slice(0,sub).map(l=> l.slice(0,sub).join(j1)).join(j2);
+            return this.slice(0,sub[0]).map(l=> l.slice(0,sub[1]).join(j1)).join(j2);
         }
     });
 }
@@ -96,8 +102,8 @@ if(!Array.prototype.printc) {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function printc(this: any[][], matches:(x:any) => boolean, color:string = 'r', j1:string = '',j2:string='\n') : void {
-            console.log(this.stringc(matches,color,j1,j2));
+	value: function printc(this: any[][], matches:(x:any) => boolean, color:string = 'r', j1:string = '',j2:string='\n', sub: number | number[]) : void {
+            console.log(this.stringc(matches,color,j1,j2, sub));
         }
     });
 }
@@ -108,12 +114,14 @@ if(!Array.prototype.stringc) {
 	enumerable: false,
 	writable:false,
 	configurable: false,
-	value: function stringc(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '',j2:string='\n') : string {
+	value: function stringc(this: any[][], matches:(x:any) => boolean, color:string, j1:string = '', j2:string='\n', sub: number|number[] = 0) : string {
             var startc = [white, green, red, yellow, cyan, blue, magenta];
             var colors = ['w','g','r','y','c', 'b','m'];
             var end = cOff;
             var start:string = startc[colors.indexOf(color)];
-            return this.map(l=> l.map(x => matches(x) ? `${start}${x}${end}`: `${x}`).join(j1)).join(j2);
+            if (sub == 0) return this.map(l=> l.map(x => matches(x) ? `${start}${x}${end}`: `${x}`).join(j1)).join(j2);
+            if (typeof sub == 'number') return this.slice(0,sub).map(l=> l.slice(0,sub).map(x => matches(x) ? `${start}${x}${end}`: `${x}`).join(j1)).join(j2);
+            return this.slice(0,sub[0]).map(l=> l.slice(0,sub[1]).map(x => matches(x) ? `${start}${x}${end}`: `${x}`).join(j1)).join(j2);
         }
     });
 }
